@@ -22,12 +22,24 @@
 <script>
 import BaseHeader from '@/components/BaseHeader.vue'
 import TaskBoard from '@/components/TaskBoard.vue'
+import ExitModal from '@/components/ExitModal.vue'
+import NewCardModal from '@/components/NewCardModal.vue'
+import TaskCard from '@/components/TaskCard.vue'
+import TaskColumn from '@/components/TaskColumn.vue'
+import TaskModal from '@/components/TaskModal.vue'
+// ... импорты остальных компонентов
 
 export default {
   name: 'HomeView',
   components: {
     BaseHeader,
     TaskBoard,
+    ExitModal,
+    NewCardModal,
+    TaskCard,
+    TaskColumn,
+    TaskModal,
+    // ... регистрация компонентов
   },
 }
 </script>

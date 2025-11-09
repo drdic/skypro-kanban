@@ -4,7 +4,7 @@
       <p>{{ title }}</p>
     </div>
     <div class="cards">
-      <!-- Пока оставляем пустым - карточки добавим позже -->
+      <slot></slot>
     </div>
   </div>
 </template>

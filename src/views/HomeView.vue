@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <BaseHeader />
-    <TaskDesk />
+  <div class="wrapper">
+    <div class="container">
+      <BaseHeader />
+      <main class="main">
+        <TaskDesk />
+      </main>
+    </div>
     <TaskModal />
     <NewCardModal />
     <ExitModal />

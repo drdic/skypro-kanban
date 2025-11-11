@@ -1,37 +1,28 @@
 <template>
-  <div class="wrapper">
+  <div>
     <BaseHeader />
-    <main class="main">
-      <div class="container">
-        <TaskBoard />
-      </div>
-    </main>
-    <!-- Попапы пока оставляем здесь по заданию -->
-    <div class="pop-exit" id="popExit">
-      <!-- Код попапа выхода -->
-    </div>
-    <div class="pop-new-card" id="popNewCard">
-      <!-- Код попапа создания задачи -->
-    </div>
-    <div class="pop-browse" id="popBrowse">
-      <!-- Код попапа просмотра задачи -->
-    </div>
+    <TaskDesk />
+    <TaskModal />
+    <NewCardModal />
+    <ExitModal />
   </div>
 </template>
 
 <script>
 import BaseHeader from '@/components/BaseHeader.vue'
-import TaskBoard from '@/components/TaskBoard.vue'
+import TaskDesk from '@/components/TaskDesk.vue'
+import TaskModal from '@/components/TaskModal.vue'
+import NewCardModal from '@/components/NewCardModal.vue'
+import ExitModal from '@/components/ExitModal.vue'
 
 export default {
   name: 'HomeView',
   components: {
     BaseHeader,
-    TaskBoard,
-  },
+    TaskDesk,
+    TaskModal,
+    NewCardModal,
+    ExitModal
+  }
 }
 </script>
-
-<style>
-@import '@/assets/main.css';
-</style>

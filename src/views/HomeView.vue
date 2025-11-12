@@ -1,11 +1,9 @@
 <template>
   <div class="wrapper">
-    <div class="container">
-      <BaseHeader />
-      <main class="main">
-        <TaskDesk />
-      </main>
-    </div>
+    <BaseHeader />
+    <main class="main">
+      <TaskDesk />
+    </main>
     <TaskModal />
     <NewCardModal />
     <ExitModal />
@@ -26,7 +24,7 @@ export default {
     TaskDesk,
     TaskModal,
     NewCardModal,
-    ExitModal
-  }
+    ExitModal,
+  },
 }
 </script>

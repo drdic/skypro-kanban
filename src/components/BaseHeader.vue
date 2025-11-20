@@ -12,9 +12,11 @@
           <button class="header__btn-main-new _hover01" id="btnMainNew">
             <a href="#popNewCard">Создать новую задачу</a>
           </button>
-          <a href="#user-set-target" class="header__user _hover02">Ivan Ivanov</a>
-          <div class="header__pop-user-set pop-user-set" id="user-set-target">
-            <!-- <a href="">x</a> -->
+          <!-- Изменяем ссылку на div с обработчиком клика -->
+          <div class="header__user _hover02" @click="toggleUserMenu">Ivan Ivanov</div>
+
+          <!-- Добавляем v-if для управления видимостью -->
+          <div v-if="isUserMenuOpen" class="header__pop-user-set pop-user-set">
             <p class="pop-user-set__name">Ivan Ivanov</p>
             <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
             <div class="pop-user-set__theme">
@@ -30,7 +32,21 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'BaseHeader',
+  setup() {
+    const isUserMenuOpen = ref(false)
+
+    const toggleUserMenu = () => {
+      isUserMenuOpen.value = !isUserMenuOpen.value
+    }
+
+    return {
+      isUserMenuOpen,
+      toggleUserMenu,
+    }
+  },
 }
 </script>

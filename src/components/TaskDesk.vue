@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <div class="main__block">
-      <p v-if="isLoading" class="simple-loading">Данные загружаются...</p>
+      <!-- Исправленный блок загрузки -->
+      <div v-if="isLoading" class="loading-container">
+        <p class="loading-text">Данные загружаются...</p>
+      </div>
 
       <div v-else class="main__content">
         <TaskColumn title="Без статуса">
@@ -91,12 +94,20 @@ export default {
 </script>
 
 <style scoped>
-.simple-loading {
-  text-align: center;
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%;
+  background-color: #eaeef6;
+  border-radius: 10px;
+}
+
+.loading-text {
   font-size: 18px;
   color: #666;
-  padding: 40px 0;
-  margin: 0;
+  text-align: center;
 }
 
 .main__content {

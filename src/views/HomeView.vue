@@ -6,6 +6,7 @@
     </main>
     <TaskModal />
     <NewCardModal />
+    <!-- ExitModal теперь управляется через глобальное состояние -->
     <ExitModal />
   </div>
 </template>
@@ -25,6 +26,6 @@ export default {
     TaskModal,
     NewCardModal,
     ExitModal,
-  },
+  }
 }
 </script>

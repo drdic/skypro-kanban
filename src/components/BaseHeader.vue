@@ -12,10 +12,11 @@
           <button class="header__btn-main-new _hover01" id="btnMainNew">
             <a href="#popNewCard">Создать новую задачу</a>
           </button>
-          <!-- Изменяем ссылку на div с обработчиком клика -->
-          <div class="header__user _hover02" @click="toggleUserMenu">Ivan Ivanov</div>
+          <div class="header__user _hover02" @click="openUserMenu">
+            Ivan Ivanov
+          </div>
 
-          <!-- Добавляем v-if для управления видимостью -->
+          <!-- Окно пользователя -->
           <div v-if="isUserMenuOpen" class="header__pop-user-set pop-user-set">
             <p class="pop-user-set__name">Ivan Ivanov</p>
             <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
@@ -23,7 +24,10 @@
               <p>Темная тема</p>
               <input type="checkbox" class="checkbox" name="checkbox" />
             </div>
-            <button type="button" class="_hover03"><a href="#popExit">Выйти</a></button>
+            <!-- Используем функцию из глобального состояния -->
+            <button type="button" class="_hover03" @click="handleLogoutClick">
+              Выйти
+            </button>
           </div>
         </nav>
       </div>
@@ -32,21 +36,35 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 
 export default {
   name: 'BaseHeader',
   setup() {
     const isUserMenuOpen = ref(false)
+    const { openExitModal } = inject('exitModal') // Получаем функцию из App.vue
 
-    const toggleUserMenu = () => {
-      isUserMenuOpen.value = !isUserMenuOpen.value
+    const openUserMenu = () => {
+      isUserMenuOpen.value = true
+    }
+
+    const closeUserMenu = () => {
+      isUserMenuOpen.value = false
+    }
+
+    const handleLogoutClick = () => {
+      // 1. Закрываем окно пользователя
+      closeUserMenu()
+      // 2. Открываем окно выхода через глобальную функцию
+      openExitModal()
     }
 
     return {
       isUserMenuOpen,
-      toggleUserMenu,
+      openUserMenu,
+      closeUserMenu,
+      handleLogoutClick
     }
-  },
+  }
 }
 </script>

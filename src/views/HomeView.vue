@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
-    <BaseHeader />
+    <!-- Временно используем упрощенный заголовок -->
+    <BaseHeaderSimple />
     <main class="main">
       <TaskDesk />
     </main>
@@ -16,11 +17,13 @@ import TaskDesk from '@/components/TaskDesk.vue'
 import TaskModal from '@/components/TaskModal.vue'
 import NewCardModal from '@/components/NewCardModal.vue'
 import ExitModal from '@/components/ExitModal.vue'
+import BaseHeaderSimple from '@/components/BaseHeaderSimple.vue'
 
 export default {
   name: 'HomeView',
   components: {
-    BaseHeader,
+    BaseHeaderSimple,
+    // BaseHeader,
     TaskDesk,
     TaskModal,
     NewCardModal,

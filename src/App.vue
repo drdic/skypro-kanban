@@ -14,7 +14,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/assets/variables.scss';
+// @import '@/assets/variables.scss';
+@use '@/assets/variables.scss' as *;
 
 * {
   margin: 0;

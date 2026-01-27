@@ -102,7 +102,7 @@ export default {
   // Стили для разных типов колонок
   &--no-status {
     .task-column__header {
-      background-color: lighten($gray, 15%);
+      background-color: $gray-light;
       border-bottom-color: $gray;
 
       .task-column__title {
@@ -117,11 +117,11 @@ export default {
 
   &--todo {
     .task-column__header {
-      background-color: lighten($orange, 35%);
+      background-color: $orange-light;
       border-bottom-color: $orange;
 
       .task-column__title {
-        color: darken($orange, 20%);
+        color: $orange; // Просто оранжевый, без затемнения
       }
 
       .task-column__count {
@@ -132,11 +132,11 @@ export default {
 
   &--in-progress {
     .task-column__header {
-      background-color: lighten($blue, 35%);
+      background-color: $blue-light;
       border-bottom-color: $blue;
 
       .task-column__title {
-        color: darken($blue, 20%);
+        color: $blue; // Просто синий
       }
 
       .task-column__count {
@@ -147,11 +147,11 @@ export default {
 
   &--testing {
     .task-column__header {
-      background-color: lighten(#9c27b0, 40%);
+      background-color: rgba(#9c27b0, 0.1);
       border-bottom-color: #9c27b0;
 
       .task-column__title {
-        color: darken(#9c27b0, 10%);
+        color: #9c27b0;
       }
 
       .task-column__count {
@@ -162,11 +162,11 @@ export default {
 
   &--done {
     .task-column__header {
-      background-color: lighten($green, 40%);
+      background-color: $green-light;
       border-bottom-color: $green;
 
       .task-column__title {
-        color: darken($green, 20%);
+        color: $green; // Просто зеленый
       }
 
       .task-column__count {

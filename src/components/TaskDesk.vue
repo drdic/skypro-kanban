@@ -95,7 +95,7 @@ export default {
     onMounted(() => {
       setTimeout(() => {
         // Для теста пустого состояния:
-        // tasksData.value = []  // Раскомментируйте для теста "Задач нет"
+        //tasksData.value = [] // Раскомментируйте для теста "Задач нет"
         tasksData.value = tasks // Оставьте для нормальной работы
         isLoading.value = false
       }, 2000)
@@ -133,15 +133,33 @@ export default {
 }
 
 .loader {
-  width: 50px;
-  height: 50px;
-  border: 4px solid $gray;
+  width: 60px;
+  height: 60px;
+  border: 4px solid transparent;
+  border-top: 4px solid $blue;
+  border-right: 4px solid $blue;
   border-radius: 50%;
-  border-top-color: $blue;
-  animation: spin 1s ease-in-out infinite;
+  animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border: 3px solid transparent;
+    border-top: 3px solid $blue-dark;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite reverse;
+  }
 
   @keyframes spin {
-    to {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
       transform: rotate(360deg);
     }
   }
@@ -149,28 +167,64 @@ export default {
 
 .loader__text {
   color: $gray-dark;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  animation: pulse 1.5s ease-in-out infinite;
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
 }
 
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   background-color: $white;
   border-radius: $border-radius;
   box-shadow: $box-shadow;
-  max-width: 400px;
-  margin: 40px auto;
+  max-width: 500px;
+  margin: 60px auto;
+  border: 2px dashed $gray;
 
   &__icon {
-    font-size: 48px;
-    margin-bottom: 16px;
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.7;
   }
 
   &__text {
-    font-size: 20px;
+    font-size: 24px;
     color: $gray-dark;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     font-weight: 500;
+  }
+
+  &__button {
+    background: linear-gradient(135deg, $blue, $blue-dark);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: $border-radius;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba($blue, 0.2);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba($blue, 0.3);
+    }
+
+    &:active {
+      transform: translateY(-1px);
+    }
   }
 }
 

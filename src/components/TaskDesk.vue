@@ -95,8 +95,8 @@ export default {
     onMounted(() => {
       setTimeout(() => {
         // Для теста пустого состояния:
-        //tasksData.value = [] // Раскомментируйте для теста "Задач нет"
-        tasksData.value = tasks // Оставьте для нормальной работы
+        //tasksData.value = [] // Раскомментировать для теста "Задач нет"
+        tasksData.value = tasks // Закомментировать для теста "Задач нет"
         isLoading.value = false
       }, 2000)
     })

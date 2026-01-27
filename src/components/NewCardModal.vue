@@ -16,6 +16,7 @@
                     name="name"
                     id="formTitle"
                     placeholder="Введите название задачи..."
+                    autocomplete="off"
                     autofocus
                   />
                 </div>
@@ -26,6 +27,7 @@
                     name="text"
                     id="textArea"
                     placeholder="Введите описание задачи..."
+                    autocomplete="off"
                   ></textarea>
                 </div>
               </form>

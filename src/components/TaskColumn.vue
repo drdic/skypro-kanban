@@ -30,7 +30,7 @@ export default {
 }
 
 .column__title p {
-  color: v-bind('theme.colors.textMuted');
+  color: #94A6BE;   /*v-bind('theme.colors.textMuted'); */
   font-size: 14px;
   font-weight: 600;
   line-height: 1;

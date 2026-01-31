@@ -107,7 +107,7 @@ export default {
     onMounted(() => {
       setTimeout(() => {
         // Для теста можно сделать пустой массив:
-        // tasksData.value = [] // ← для проверки пустого состояния
+        //tasksData.value = [] // ← для проверки пустого состояния
         tasksData.value = tasks // ← обычное состояние
         isLoading.value = false
       }, 2000)

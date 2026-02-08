@@ -34,9 +34,11 @@
               <p>Темная тема</p>
               <input type="checkbox" class="checkbox" name="checkbox" />
             </div>
-
-            <button type="button" class="_hover03">
+            <!-- <button type="button" class="_hover03">
               <router-link to="/exit">Выйти</router-link>
+            </button> -->
+            <button type="button" class="_hover03">
+              <a href="#popExit">Выйти</a>
             </button>
           </div>
         </nav>

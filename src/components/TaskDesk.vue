@@ -128,22 +128,36 @@ export default {
 </script>
 
 <style scoped>
+/* Удаляем фон у loading-state и делаем его на весь экран */
+.container {
+  min-height: 100vh; /* Важно! */
+  background: #EAEEF6; /* Фон всей области */
+}
+
+.main__block {
+  min-height: calc(100vh - 70px); /* Полная высота минус хедер */
+  display: flex;
+  flex-direction: column;
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 400px;
-  gap: 20px;
+  flex: 1; /* Занимает всё пространство */
+  width: 100%;
+  /* Убираем background отсюда - он теперь в .container */
 }
 
 .loader {
   width: 50px;
   height: 50px;
-  border: 4px solid v-bind('theme.colors.textMuted');
-  border-top: 4px solid v-bind('theme.colors.primary');
+  border: 4px solid #94A6BE;
+  border-top: 4px solid #565EEF;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  margin-bottom: 20px;
 }
 
 .empty-state {
@@ -151,9 +165,12 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 400px;
+  flex: 1;
+  width: 100%;
+  background: #EAEEF6; /* Тот же фон */
+  border-radius: 8px;
   text-align: center;
-  color: v-bind('theme.colors.textSecondary');
+  color: #333333;
 }
 
 .empty-icon {
@@ -166,17 +183,20 @@ export default {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: v-bind('theme.colors.textPrimary');
+  color: #000000;
 }
 
 .empty-description {
   font-size: 16px;
+  color: #666666;
 }
 
 .main__content {
   display: flex;
   width: 100%;
   gap: 20px;
+  min-height: 400px;
+  background: #EAEEF6; /* Тоже добавляем фон */
 }
 
 @keyframes spin {

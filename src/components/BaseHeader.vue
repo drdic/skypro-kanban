@@ -17,7 +17,7 @@
             <router-link to="/add">Создать новую задачу</router-link>
           </button>
 
-          <!-- Ссылка с якорем для открытия модального окна -->
+          <!-- Ссылка с якорем для открытия модального окна пользователя -->
           <a href="#user-set-target" class="header__user _hover02">
             Ivan Ivanov
           </a>
@@ -25,7 +25,7 @@
           <!-- Модальное окно пользователя -->
           <div class="header__pop-user-set pop-user-set" id="user-set-target">
             <!-- Кнопка закрытия (крестик) -->
-            <a href="#" class="pop-user-set__close">×</a>
+            <!-- <a href="#" class="pop-user-set__close">×</a> -->
 
             <p class="pop-user-set__name">Ivan Ivanov</p>
             <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
@@ -34,9 +34,8 @@
               <p>Темная тема</p>
               <input type="checkbox" class="checkbox" name="checkbox" />
             </div>
-            <!-- <button type="button" class="_hover03">
-              <router-link to="/exit">Выйти</router-link>
-            </button> -->
+
+            <!-- Изменяем ссылку на якорь для модального окна выхода -->
             <button type="button" class="_hover03">
               <a href="#popExit">Выйти</a>
             </button>
@@ -46,44 +45,3 @@
     </div>
   </header>
 </template>
-
-<script>
-export default {
-  name: 'BaseHeader',
-}
-</script>
-
-<style scoped>
-/* Стили для кнопки закрытия */
-.pop-user-set__close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 24px;
-  height: 24px;
-  color: #94A6BE;
-  font-size: 24px;
-  text-decoration: none;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-.pop-user-set__close:hover {
-  color: #000;
-  background-color: #f0f0f0;
-}
-
-/* Убедимся, что модальное окно правильно позиционируется */
-.header__nav {
-  position: relative;
-}
-
-/* Важно: переопределяем display для :target */
-.header__pop-user-set:target {
-  display: block !important;
-}
-</style>

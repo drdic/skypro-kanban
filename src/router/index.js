@@ -14,54 +14,51 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true } // Защищенный маршрут
+      meta: { requiresAuth: true }, // Защищенный маршрут
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView
+      component: RegisterView,
     },
     {
       path: '/card/:id',
       name: 'card',
       component: CardView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/add',
       name: 'add',
       component: AddCardView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
     {
       path: '/exit',
       name: 'exit',
       component: ExitView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
     },
-    // Страница 404 должна быть последней
+
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
-      component: NotFoundView
-    }
-  ]
+      component: NotFoundView,
+    },
+  ],
 })
 
-// Навигационный guard для защиты маршрутов
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated')
 
   if (to.meta.requiresAuth && !isAuthenticated) {
-    // Если маршрут защищен и пользователь не авторизован
     next('/login')
   } else {
-    // Иначе продолжаем навигацию
     next()
   }
 })

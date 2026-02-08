@@ -17,16 +17,9 @@
             <router-link to="/add">Создать новую задачу</router-link>
           </button>
 
-          <!-- Ссылка с якорем для открытия модального окна пользователя -->
-          <a href="#user-set-target" class="header__user _hover02">
-            Ivan Ivanov
-          </a>
+          <a href="#user-set-target" class="header__user _hover02"> Ivan Ivanov </a>
 
-          <!-- Модальное окно пользователя -->
           <div class="header__pop-user-set pop-user-set" id="user-set-target">
-            <!-- Кнопка закрытия (крестик) -->
-            <!-- <a href="#" class="pop-user-set__close">×</a> -->
-
             <p class="pop-user-set__name">Ivan Ivanov</p>
             <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
 
@@ -35,7 +28,6 @@
               <input type="checkbox" class="checkbox" name="checkbox" />
             </div>
 
-            <!-- Изменяем ссылку на якорь для модального окна выхода -->
             <button type="button" class="_hover03">
               <a href="#popExit">Выйти</a>
             </button>

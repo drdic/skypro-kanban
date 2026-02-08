@@ -1,19 +1,22 @@
 <template>
   <div class="card-view">
     <div class="card-view__container">
-      <!-- Шапка с навигацией -->
       <div class="card-view__header">
         <router-link to="/" class="card-view__back">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M19 12H5M12 19L5 12L12 5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           Назад к доске
         </router-link>
       </div>
 
-      <!-- Основной контент -->
       <div class="card-view__content">
-        <!-- Заголовок с ID -->
         <div class="card-view__title-block">
           <h1 class="card-view__title">
             Просмотр карточки
@@ -24,7 +27,6 @@
           </div>
         </div>
 
-        <!-- Информация о карточке -->
         <div class="card-view__info">
           <div class="card-view__section">
             <h3 class="card-view__section-title">Название задачи</h3>
@@ -34,7 +36,10 @@
           <div class="card-view__section">
             <h3 class="card-view__section-title">Описание</h3>
             <div class="card-view__description">
-              <p>Необходимо реализовать систему перетаскивания карточек между колонками, добавление новых карточек и редактирование существующих.</p>
+              <p>
+                Необходимо реализовать систему перетаскивания карточек между колонками, добавление
+                новых карточек и редактирование существующих.
+              </p>
               <p>Срок выполнения: до конца недели.</p>
             </div>
           </div>
@@ -58,27 +63,27 @@
           </div>
         </div>
 
-        <!-- Кнопки действий -->
         <div class="card-view__actions">
           <button class="btn btn-primary" @click="editCard">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M11.3333 1.99996C11.5083 1.82496 11.7163 1.68729 11.9447 1.59463C12.173 1.50196 12.4173 1.45605 12.6633 1.45951C12.9093 1.46296 13.152 1.5157 13.3773 1.61463C13.6027 1.71357 13.8059 1.8567 13.975 2.03574C14.144 2.21478 14.2756 2.42604 14.3622 2.65685C14.4488 2.88766 14.4887 3.13339 14.4795 3.37957C14.4703 3.62576 14.4122 3.86753 14.3087 4.09104C14.2051 4.31456 14.0582 4.51538 13.8767 4.68163L6.44333 12.115L2 13.3333L3.21833 8.88996L10.6667 1.99996H11.3333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path
+                d="M11.3333 1.99996C11.5083 1.82496 11.7163 1.68729 11.9447 1.59463C12.173 1.50196 12.4173 1.45605 12.6633 1.45951C12.9093 1.46296 13.152 1.5157 13.3773 1.61463C13.6027 1.71357 13.8059 1.8567 13.975 2.03574C14.144 2.21478 14.2756 2.42604 14.3622 2.65685C14.4488 2.88766 14.4887 3.13339 14.4795 3.37957C14.4703 3.62576 14.4122 3.86753 14.3087 4.09104C14.2051 4.31456 14.0582 4.51538 13.8767 4.68163L6.44333 12.115L2 13.3333L3.21833 8.88996L10.6667 1.99996H11.3333Z"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             Редактировать
           </button>
-          <button class="btn btn-secondary" @click="goBack">
-            Отмена
-          </button>
-          <button class="btn btn-danger" @click="deleteCard">
-            Удалить
-          </button>
+          <button class="btn btn-secondary" @click="goBack">Отмена</button>
+          <button class="btn btn-danger" @click="deleteCard">Удалить</button>
         </div>
 
-        <!-- Техническая информация (для демонстрации критерия) -->
         <div class="card-view__tech-info">
           <p class="tech-note">
-            <strong>Техническая информация:</strong> ID карточки <code>{{ cardId }}</code> получен из URL
-            через <code>useRoute().params.id</code>
+            <strong>Техническая информация:</strong> ID карточки <code>{{ cardId }}</code> получен
+            из URL через <code>useRoute().params.id</code>
           </p>
         </div>
       </div>
@@ -95,7 +100,6 @@ const cardId = route.params.id
 
 const editCard = () => {
   console.log('Редактирование карточки ID:', cardId)
-  // В реальном приложении здесь будет переход в режим редактирования
 }
 
 const goBack = () => {

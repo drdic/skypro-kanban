@@ -1,21 +1,24 @@
 <template>
   <div class="add-card-view">
     <div class="add-card-view__container">
-      <!-- Шапка с навигацией -->
       <div class="add-card-view__header">
         <router-link to="/" class="add-card-view__back">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M19 12H5M12 19L5 12L12 5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
           Назад к доске
         </router-link>
       </div>
 
-      <!-- Основной контент -->
       <div class="add-card-view__content">
         <h1 class="add-card-view__title">Добавить новую задачу</h1>
 
-        <!-- Форма добавления -->
         <form @submit.prevent="addCard" class="add-card-form">
           <div class="form-group">
             <label for="taskTitle" class="form-label">Название задачи *</label>
@@ -26,7 +29,7 @@
               class="form-input"
               placeholder="Введите название задачи"
               required
-            >
+            />
           </div>
 
           <div class="form-group">
@@ -43,11 +46,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="taskStatus" class="form-label">Статус</label>
-              <select
-                id="taskStatus"
-                v-model="task.status"
-                class="form-select"
-              >
+              <select id="taskStatus" v-model="task.status" class="form-select">
                 <option value="backlog">Бэклог</option>
                 <option value="processing">В работе</option>
                 <option value="done">Готово</option>
@@ -57,11 +56,7 @@
 
             <div class="form-group">
               <label for="taskPriority" class="form-label">Приоритет</label>
-              <select
-                id="taskPriority"
-                v-model="task.priority"
-                class="form-select"
-              >
+              <select id="taskPriority" v-model="task.priority" class="form-select">
                 <option value="low">Низкий</option>
                 <option value="medium">Средний</option>
                 <option value="high">Высокий</option>
@@ -77,30 +72,28 @@
               v-model="task.assignee"
               class="form-input"
               placeholder="Введите имя исполнителя"
-            >
+            />
           </div>
 
           <div class="form-group">
             <label for="taskDeadline" class="form-label">Срок выполнения</label>
-            <input
-              type="date"
-              id="taskDeadline"
-              v-model="task.deadline"
-              class="form-input"
-            >
+            <input type="date" id="taskDeadline" v-model="task.deadline" class="form-input" />
           </div>
 
-          <!-- Кнопки действий -->
           <div class="add-card-actions">
             <button type="submit" class="btn btn-primary">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 1V15M1 8H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path
+                  d="M8 1V15M1 8H15"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
               Создать задачу
             </button>
-            <button type="button" class="btn btn-secondary" @click="cancel">
-              Отмена
-            </button>
+            <button type="button" class="btn btn-secondary" @click="cancel">Отмена</button>
           </div>
         </form>
       </div>
@@ -120,12 +113,12 @@ const task = ref({
   status: 'backlog',
   priority: 'medium',
   assignee: '',
-  deadline: ''
+  deadline: '',
 })
 
 const addCard = () => {
   console.log('Создание новой задачи:', task.value)
-  // В реальном приложении здесь будет отправка данных на сервер
+
   alert(`Задача "${task.value.title}" создана!`)
   router.push('/')
 }

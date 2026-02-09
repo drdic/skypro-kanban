@@ -14,23 +14,23 @@
 
       <div v-else class="main__content">
         <TaskColumn title="Без статуса">
-          <Task v-for="task in noStatusTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in noStatusTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="Нужно сделать">
-          <Task v-for="task in todoTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in todoTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="В работе">
-          <Task v-for="task in inProgressTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in inProgressTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="Тестирование">
-          <Task v-for="task in testingTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in testingTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="Готово">
-          <Task v-for="task in doneTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in doneTasks" :key="task.id" :task="task" />
         </TaskColumn>
       </div>
     </div>
@@ -42,13 +42,13 @@ import { ref, onMounted, computed } from 'vue'
 import { theme } from '../theme.js'
 import { tasks } from './mocks/tasks.js'
 import TaskColumn from './TaskColumn.vue'
-import Task from './Task.vue'
+import TaskItem from './Task.vue'
 
 export default {
   name: 'TaskDesk',
   components: {
     TaskColumn,
-    Task,
+    TaskItem,
   },
   setup() {
     const isLoading = ref(true)
@@ -67,6 +67,7 @@ export default {
 
     const adaptTasks = (tasks) => {
       return tasks.map((task) => ({
+        id: task.id,
         title: task.title,
         category: task.topic,
         theme: getThemeColor(task.topic),

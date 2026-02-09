@@ -5,13 +5,13 @@
         <div :class="['card__theme', `_${task.theme}`]">
           <p :class="`_${task.theme}`">{{ task.category }}</p>
         </div>
-        <a href="#popBrowse" target="_self">
+        <router-link :to="`/card/${task.id}`" class="card__btn-link">
           <div class="card__btn">
             <div></div>
             <div></div>
             <div></div>
           </div>
-        </a>
+        </router-link>
       </div>
       <div class="card__content">
         <a href="" target="_blank">
@@ -55,9 +55,16 @@
 
 <script>
 export default {
-  name: 'Task',
+  name: 'TaskItem',
   props: {
     task: Object,
   },
 }
 </script>
+
+<style scoped>
+.card__btn-link {
+  text-decoration: none;
+  display: inline-block;
+}
+</style>

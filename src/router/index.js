@@ -8,13 +8,13 @@ import ExitView from '../views/ExitView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory('/'),
   routes: [
     {
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true }, // Защищенный маршрут
+      meta: { requiresAuth: true },
     },
     {
       path: '/login',
@@ -44,7 +44,6 @@ const router = createRouter({
       component: ExitView,
       meta: { requiresAuth: true },
     },
-
     {
       path: '/:pathMatch(.*)*',
       name: 'not-found',

@@ -56,46 +56,36 @@ export default {
 
     const hasTasks = computed(() => tasksData.value && tasksData.value.length > 0)
 
-    const getThemeColor = (topic) => {
-      const themeMap = {
-        'Web Design': 'orange',
-        Research: 'green',
-        Copywriting: 'purple',
-      }
-      return themeMap[topic] || 'orange'
-    }
-
-    const adaptTasks = (tasks) => {
-      return tasks.map((task) => ({
-        id: task.id,
-        title: task.title,
-        category: task.topic,
-        theme: getThemeColor(task.topic),
-        date: task.date,
-      }))
-    }
-
     const noStatusTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'no-status')),
+      tasksData.value.filter((task) => task.status === 'no-status' || !task.status),
     )
     const todoTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'todo')),
+      tasksData.value.filter((task) => task.status === 'todo'),
     )
     const inProgressTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'in-progress')),
+      tasksData.value.filter((task) => task.status === 'in-progress'),
     )
     const testingTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'testing')),
+      tasksData.value.filter((task) => task.status === 'testing'),
     )
     const doneTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'done')),
+      tasksData.value.filter((task) => task.status === 'done'),
     )
 
     onMounted(() => {
       setTimeout(() => {
-        tasksData.value = tasks
+        // Читаем задачи из localStorage
+        const storedTasks = localStorage.getItem('tasks')
+        if (storedTasks) {
+          tasksData.value = JSON.parse(storedTasks)
+        } else {
+          // Если localStorage пуст, загружаем тестовые данные
+          tasksData.value = tasks
+          // Сохраняем тестовые данные в localStorage для будущих запусков
+          localStorage.setItem('tasks', JSON.stringify(tasks))
+        }
         isLoading.value = false
-      }, 2000)
+      }, 500)
     })
 
     return {

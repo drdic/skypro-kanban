@@ -17,7 +17,6 @@ export default {
 </script>
 
 <style scoped>
-/* Добавляем scoped стили */
 .main__column {
   width: 20%;
   margin: 0 auto;
@@ -30,7 +29,7 @@ export default {
 }
 
 .column__title p {
-  color: #94A6BE;   /*v-bind('theme.colors.textMuted'); */
+  color: #94a6be;
   font-size: 14px;
   font-weight: 600;
   line-height: 1;

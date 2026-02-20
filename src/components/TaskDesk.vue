@@ -1,44 +1,36 @@
 <template>
   <div class="container">
     <div class="main__block">
-      <!-- Состояние загрузки с анимацией -->
       <div v-if="isLoading" class="loading-state">
         <div class="loader"></div>
         <p>Данные загружаются...</p>
       </div>
 
-      <!-- Пустое состояние после загрузки -->
       <div v-else-if="!hasTasks" class="empty-state">
         <div class="empty-icon">📋</div>
         <h3 class="empty-title">Задач нет</h3>
         <p class="empty-description">Создайте первую задачу</p>
       </div>
 
-      <!-- Основной контент после загрузки -->
       <div v-else class="main__content">
-        <!-- Колонка "Без статуса" -->
         <TaskColumn title="Без статуса">
-          <Task v-for="task in noStatusTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in noStatusTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
-        <!-- Колонка "Нужно сделать" -->
         <TaskColumn title="Нужно сделать">
-          <Task v-for="task in todoTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in todoTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
-        <!-- Колонка "В работе" -->
         <TaskColumn title="В работе">
-          <Task v-for="task in inProgressTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in inProgressTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
-        <!-- Колонка "Тестирование" -->
         <TaskColumn title="Тестирование">
-          <Task v-for="task in testingTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in testingTasks" :key="task.id" :task="task" />
         </TaskColumn>
 
-        <!-- Колонка "Готово" -->
         <TaskColumn title="Готово">
-          <Task v-for="task in doneTasks" :key="task.id" :task="task" />
+          <TaskItem v-for="task in doneTasks" :key="task.id" :task="task" />
         </TaskColumn>
       </div>
     </div>
@@ -47,70 +39,53 @@
 
 <script>
 import { ref, onMounted, computed } from 'vue'
-import { theme } from '../theme.js' // <-- ИМПОРТИРУЕМ ТЕМУ
+import { theme } from '../theme.js'
 import { tasks } from './mocks/tasks.js'
 import TaskColumn from './TaskColumn.vue'
-import Task from './Task.vue'
+import TaskItem from './Task.vue'
 
 export default {
   name: 'TaskDesk',
   components: {
     TaskColumn,
-    Task,
+    TaskItem,
   },
   setup() {
-    // Состояние загрузки
     const isLoading = ref(true)
     const tasksData = ref([])
 
-    // Проверка на наличие задач
     const hasTasks = computed(() => tasksData.value && tasksData.value.length > 0)
 
-    // Преобразуем topic в theme для цвета
-    const getThemeColor = (topic) => {
-      const themeMap = {
-        'Web Design': 'orange',
-        Research: 'green',
-        Copywriting: 'purple',
-      }
-      return themeMap[topic] || 'orange'
-    }
-
-    // Адаптируем задачи для компонента Task
-    const adaptTasks = (tasks) => {
-      return tasks.map((task) => ({
-        title: task.title,
-        category: task.topic,
-        theme: getThemeColor(task.topic),
-        date: task.date,
-      }))
-    }
-
-    // Фильтруем задачи по статусам
     const noStatusTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'no-status')),
+      tasksData.value.filter((task) => task.status === 'no-status' || !task.status),
     )
     const todoTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'todo')),
+      tasksData.value.filter((task) => task.status === 'todo'),
     )
     const inProgressTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'in-progress')),
+      tasksData.value.filter((task) => task.status === 'in-progress'),
     )
     const testingTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'testing')),
+      tasksData.value.filter((task) => task.status === 'testing'),
     )
     const doneTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'done')),
+      tasksData.value.filter((task) => task.status === 'done'),
     )
 
-    // Имитация загрузки
     onMounted(() => {
       setTimeout(() => {
-        // Для теста можно сделать пустой массив:
-        //tasksData.value = [] // ← для проверки пустого состояния
-        tasksData.value = tasks // ← обычное состояние
+        // Читаем задачи из localStorage
+        const storedTasks = localStorage.getItem('tasks')
+        if (storedTasks) {
+          tasksData.value = JSON.parse(storedTasks)
+        } else {
+          // Если localStorage пуст, загружаем тестовые данные
+          tasksData.value = tasks
+          // Сохраняем тестовые данные в localStorage для будущих запусков
+          localStorage.setItem('tasks', JSON.stringify(tasks))
+        }
         isLoading.value = false
-      }, 2000)
+      }, 500)
     })
 
     return {
@@ -121,29 +96,41 @@ export default {
       inProgressTasks,
       testingTasks,
       doneTasks,
-      theme, // <-- ДОБАВЛЯЕМ ТЕМУ В RETURN
+      theme,
     }
   },
 }
 </script>
 
 <style scoped>
+.container {
+  min-height: 100vh;
+  background: #eaeef6;
+}
+
+.main__block {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 400px;
-  gap: 20px;
+  flex: 1;
+  width: 100%;
 }
 
 .loader {
   width: 50px;
   height: 50px;
-  border: 4px solid v-bind('theme.colors.textMuted');
-  border-top: 4px solid v-bind('theme.colors.primary');
+  border: 4px solid #94a6be;
+  border-top: 4px solid #565eef;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  margin-bottom: 20px;
 }
 
 .empty-state {
@@ -151,9 +138,12 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 400px;
+  flex: 1;
+  width: 100%;
+  background: #eaeef6;
+  border-radius: 8px;
   text-align: center;
-  color: v-bind('theme.colors.textSecondary');
+  color: #333333;
 }
 
 .empty-icon {
@@ -166,21 +156,28 @@ export default {
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: v-bind('theme.colors.textPrimary');
+  color: #000000;
 }
 
 .empty-description {
   font-size: 16px;
+  color: #666666;
 }
 
 .main__content {
   display: flex;
   width: 100%;
   gap: 20px;
+  min-height: 400px;
+  background: #eaeef6;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

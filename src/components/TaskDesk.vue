@@ -3,23 +3,23 @@
     <div class="main__block">
       <div class="main__content">
         <TaskColumn title="Без статуса">
-          <Task v-for="(task, index) in tasks.noStatus" :key="index" :task="task" />
+          <TaskCard v-for="(task, index) in tasks.noStatus" :key="index" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="Нужно сделать">
-          <Task v-for="(task, index) in tasks.todo" :key="index" :task="task" />
+          <TaskCard v-for="(task, index) in tasks.todo" :key="index" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="В работе">
-          <Task v-for="(task, index) in tasks.inProgress" :key="index" :task="task" />
+          <TaskCard v-for="(task, index) in tasks.inProgress" :key="index" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="Тестирование">
-          <Task v-for="(task, index) in tasks.testing" :key="index" :task="task" />
+          <TaskCard v-for="(task, index) in tasks.testing" :key="index" :task="task" />
         </TaskColumn>
 
         <TaskColumn title="Готово">
-          <Task v-for="(task, index) in tasks.done" :key="index" :task="task" />
+          <TaskCard v-for="(task, index) in tasks.done" :key="index" :task="task" />
         </TaskColumn>
       </div>
     </div>
@@ -28,13 +28,13 @@
 
 <script>
 import TaskColumn from './TaskColumn.vue'
-import Task from './Task.vue'
+import TaskCard from './TaskCard.vue'
 
 export default {
   name: 'TaskDesk',
   components: {
     TaskColumn,
-    Task,
+    TaskCard,
   },
   data() {
     return {

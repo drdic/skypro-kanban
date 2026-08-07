@@ -55,7 +55,7 @@
 
 <script>
 export default {
-  name: 'Task',
+  name: 'TaskCard',
   props: {
     task: Object,
   },

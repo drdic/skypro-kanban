@@ -1,5 +1,4 @@
 export const tasks = [
-  // Колонка "Без статуса" - 5 карточек
   {
     id: 1,
     topic: 'Web Design',
@@ -36,7 +35,6 @@ export const tasks = [
     status: 'no-status',
   },
 
-  // Колонка "Нужно сделать" - 1 карточка
   {
     id: 6,
     topic: 'Research',
@@ -45,7 +43,6 @@ export const tasks = [
     status: 'todo',
   },
 
-  // Колонка "В работе" - 3 карточки
   {
     id: 7,
     topic: 'Research',
@@ -68,7 +65,6 @@ export const tasks = [
     status: 'in-progress',
   },
 
-  // Колонка "Тестирование" - 1 карточка
   {
     id: 10,
     topic: 'Research',
@@ -77,7 +73,6 @@ export const tasks = [
     status: 'testing',
   },
 
-  // Колонка "Готово" - 1 карточка
   {
     id: 11,
     topic: 'Research',

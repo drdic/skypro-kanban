@@ -1,12 +1,10 @@
 <template>
   <div class="container">
     <div class="main__block">
-      <!-- Состояние загрузки -->
       <div v-if="isLoading" class="loading-state">
         <p>Данные загружаются</p>
       </div>
 
-      <!-- Основной контент после загрузки -->
       <div v-else class="main__content">
         <TaskColumn title="Без статуса">
           <TaskCard v-for="task in noStatusTasks" :key="task.id" :task="task" />
@@ -45,11 +43,9 @@ export default {
     TaskCard,
   },
   setup() {
-    // Состояние загрузки
     const isLoading = ref(true)
     const tasksData = ref([])
 
-    // Преобразуем topic в theme для цвета
     const getThemeColor = (topic) => {
       const themeMap = {
         'Web Design': 'orange',
@@ -59,7 +55,6 @@ export default {
       return themeMap[topic] || 'orange'
     }
 
-    // Адаптируем задачи для компонента TaskCard
     const adaptTasks = (taskList) => {
       return taskList.map((task) => ({
         id: task.id,
@@ -70,7 +65,6 @@ export default {
       }))
     }
 
-    // Фильтруем задачи по статусам
     const noStatusTasks = computed(() =>
       adaptTasks(tasksData.value.filter((task) => task.status === 'no-status')),
     )
@@ -87,7 +81,6 @@ export default {
       adaptTasks(tasksData.value.filter((task) => task.status === 'done')),
     )
 
-    // Имитация загрузки
     onMounted(() => {
       setTimeout(() => {
         tasksData.value = tasks

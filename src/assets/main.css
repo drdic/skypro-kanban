@@ -859,7 +859,7 @@ body {
 }
 
 .header__pop-user-set {
-  display: none;
+  display: block;
   position: absolute;
   top: 61px;
   right: 0;
@@ -876,6 +876,7 @@ body {
 
 .main {
   width: 100%;
+  min-height: 100vh;
   background-color: #EAEEF6;
 }
 

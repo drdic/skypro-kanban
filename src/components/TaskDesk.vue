@@ -120,7 +120,6 @@ export default {
   display: flex;
 }
 
-/* ---------- Состояние загрузки (лоадер) ---------- */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -165,7 +164,6 @@ export default {
   }
 }
 
-/* ---------- Пустой массив ---------- */
 .empty-state {
   display: flex;
   align-items: center;

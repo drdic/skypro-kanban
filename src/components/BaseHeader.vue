@@ -137,7 +137,7 @@ export default {
 }
 
 .header__user::after {
-  content: "";
+  content: '';
   display: block;
   width: 6px;
   height: 6px;
@@ -196,7 +196,7 @@ export default {
   letter-spacing: -0.14px;
 }
 
-.pop-user-set__theme input[type="checkbox"] {
+.pop-user-set__theme input[type='checkbox'] {
   position: relative;
   width: 24px;
   height: 13px;
@@ -208,8 +208,8 @@ export default {
   appearance: none;
 }
 
-.pop-user-set__theme input[type="checkbox"]::before {
-  content: "";
+.pop-user-set__theme input[type='checkbox']::before {
+  content: '';
   position: absolute;
   top: 1px;
   left: 1px;
@@ -220,7 +220,7 @@ export default {
   transition: 0.5s;
 }
 
-.pop-user-set__theme input:checked[type="checkbox"]::before {
+.pop-user-set__theme input:checked[type='checkbox']::before {
   left: 12px;
 }
 

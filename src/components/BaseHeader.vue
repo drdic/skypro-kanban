@@ -3,10 +3,14 @@
     <div class="container">
       <div class="header__block">
         <div class="header__logo _show _light">
-          <a href="#" target="_self"><img src="/assets/images/logo.png" alt="logo" /></a>
+          <a href="#" target="_self"
+            ><img :src="`${baseUrl}assets/images/logo.png`" alt="logo"
+          /></a>
         </div>
         <div class="header__logo _dark">
-          <a href="#" target="_self"><img src="/assets/images/logo_dark.png" alt="logo" /></a>
+          <a href="#" target="_self"
+            ><img :src="`${baseUrl}assets/images/logo_dark.png`" alt="logo"
+          /></a>
         </div>
         <nav class="header__nav" ref="headerNav">
           <button class="header__btn-main-new _hover01" id="btnMainNew">
@@ -38,6 +42,7 @@ export default {
   setup() {
     const isPopupOpen = ref(false)
     const headerNav = ref(null)
+    const baseUrl = import.meta.env.BASE_URL
 
     const togglePopup = () => {
       isPopupOpen.value = !isPopupOpen.value
@@ -64,6 +69,7 @@ export default {
     return {
       isPopupOpen,
       headerNav,
+      baseUrl,
       togglePopup,
       closePopup,
     }

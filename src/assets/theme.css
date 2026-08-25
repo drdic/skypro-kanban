@@ -1,0 +1,37 @@
+/* ============================================================
+   Палитра темы приложения (объект цветов)
+   Все цвета вынесены в единый объект CSS-переменных :root
+   и переиспользуются в scoped-стилях компонентов через var(--...)
+   ============================================================ */
+
+:root {
+  /* Основные цвета фона */
+  --color-bg: #f1f1f1;
+  --color-bg-content: #eaeef6;
+  --color-bg-white: #ffffff;
+
+  /* Основные цвета текста */
+  --color-text-primary: #000000;
+  --color-text-secondary: #94a6be;
+  --color-text-white: #ffffff;
+
+  /* Границы и подложки */
+  --color-border: #d4dbe5;
+  --color-border-light: rgba(148, 166, 190, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.4);
+  --color-shadow-popup: rgba(26, 56, 101, 0.21);
+  --color-shadow-modal: rgba(0, 0, 0, 0.13);
+
+  /* Акцентные цвета (кнопки, ссылки, логотип) */
+  --color-accent: #565eef;
+  --color-accent-hover: #33399b;
+
+  /* Тематические категории задач */
+  --color-orange-bg: #ffe4c2;
+  --color-orange-text: #ff6d00;
+  --color-green-bg: #b4fdd1;
+  --color-green-text: #06b16e;
+  --color-purple-bg: #e9d4ff;
+  --color-purple-text: #9a48f1;
+  --color-gray-bg: #94a6be;
+}

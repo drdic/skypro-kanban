@@ -129,16 +129,9 @@ export default {
   line-height: 21px;
   font-weight: 500;
   letter-spacing: -0.14px;
-  color: var(--color-text-white);
-}
-
-.pop-exit__exit-no a {
-  width: 100%;
-  height: 100%;
   color: var(--color-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .pop-exit__form-group {

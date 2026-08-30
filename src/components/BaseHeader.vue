@@ -3,14 +3,14 @@
     <div class="container">
       <div class="header__block">
         <div class="header__logo _show _light">
-          <a href="#" target="_self"
+          <router-link to="/"
             ><img :src="`${baseUrl}assets/images/logo.png`" alt="logo"
-          /></a>
+          /></router-link>
         </div>
         <div class="header__logo _dark">
-          <a href="#" target="_self"
+          <router-link to="/"
             ><img :src="`${baseUrl}assets/images/logo_dark.png`" alt="logo"
-          /></a>
+          /></router-link>
         </div>
         <nav class="header__nav" ref="headerNav">
           <button class="header__btn-main-new _hover01" id="btnMainNew">

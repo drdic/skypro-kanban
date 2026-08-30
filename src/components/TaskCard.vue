@@ -76,6 +76,8 @@ export default {
   align-items: flex-start;
   justify-content: stretch;
   padding: 15px 13px 19px;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .card__group {

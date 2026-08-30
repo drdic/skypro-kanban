@@ -6,16 +6,16 @@
           <div class="pop-exit__ttl">
             <h2>Выйти из аккаунта?</h2>
           </div>
-          <form class="pop-exit__form" id="formExit" action="#">
+          <div class="pop-exit__form" id="formExit">
             <div class="pop-exit__form-group">
-              <button class="pop-exit__exit-yes _hover01" id="exitYes">
-                <a href="#">Да, выйти</a>
+              <button class="pop-exit__exit-yes _hover01" id="exitYes" @click="handleLogout">
+                Да, выйти
               </button>
-              <button class="pop-exit__exit-no _hover03" id="exitNo">
-                <a href="#">Нет, остаться</a>
-              </button>
+              <router-link to="/" class="pop-exit__exit-no _hover03" id="exitNo">
+                Нет, остаться
+              </router-link>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -23,14 +23,28 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+
 export default {
   name: 'ExitModal',
+  setup() {
+    const router = useRouter()
+
+    const handleLogout = () => {
+      localStorage.removeItem('isAuthenticated')
+      router.push('/login')
+    }
+
+    return {
+      handleLogout,
+    }
+  },
 }
 </script>
 
 <style scoped>
 .pop-exit {
-  display: none;
+  display: block;
   width: 100%;
   height: 100%;
   min-width: 320px;
@@ -39,10 +53,6 @@ export default {
   top: 0;
   left: 0;
   z-index: 5;
-}
-
-.pop-exit:target {
-  display: block;
 }
 
 .pop-exit__container {

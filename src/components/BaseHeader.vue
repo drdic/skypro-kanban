@@ -14,7 +14,7 @@
         </div>
         <nav class="header__nav" ref="headerNav">
           <button class="header__btn-main-new _hover01" id="btnMainNew">
-            <a href="#popNewCard">Создать новую задачу</a>
+            <router-link to="/add">Создать новую задачу</router-link>
           </button>
           <a href="#" class="header__user _hover02" @click.prevent="togglePopup">Ivan Ivanov</a>
           <div v-if="isPopupOpen" class="header__pop-user-set pop-user-set">
@@ -25,7 +25,7 @@
               <input type="checkbox" class="checkbox" name="checkbox" />
             </div>
             <button type="button" class="_hover03" @click="closePopup">
-              <a href="#popExit" @click="closePopup">Выйти</a>
+              <router-link to="/exit" @click="closePopup">Выйти</router-link>
             </button>
           </div>
         </nav>

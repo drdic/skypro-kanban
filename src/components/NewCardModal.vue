@@ -5,7 +5,7 @@
         <div class="pop-new-card__block">
           <div class="pop-new-card__content">
             <h3 class="pop-new-card__ttl">Создание задачи</h3>
-            <a href="#" class="pop-new-card__close">&#10006;</a>
+            <router-link to="/" class="pop-new-card__close">&#10006;</router-link>
             <div class="pop-new-card__wrap">
               <form class="pop-new-card__form form-new" id="formNewCard" action="#">
                 <div class="form-new__block">
@@ -133,7 +133,7 @@
                 </div>
               </div>
             </div>
-            <button class="form-new__create _hover01" id="btnCreate">Создать задачу</button>
+            <router-link to="/" class="form-new__create _hover01" id="btnCreate">Создать задачу</router-link>
           </div>
         </div>
       </div>
@@ -149,7 +149,7 @@ export default {
 
 <style scoped>
 .pop-new-card {
-  display: none;
+  display: block;
   width: 100%;
   min-width: 375px;
   height: 100%;
@@ -158,10 +158,6 @@ export default {
   top: 0;
   left: 0;
   z-index: 6;
-}
-
-.pop-new-card:target {
-  display: block;
 }
 
 .pop-new-card__container {

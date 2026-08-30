@@ -34,3 +34,6 @@ coverage
 
 # Vitest
 __screenshots__/
+
+# Личные заметки (не попадают в git/на GitHub — удалить перед сдачей)
+HW_NOTES.md

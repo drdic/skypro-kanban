@@ -2,7 +2,12 @@
   <div class="container">
     <div class="main__block">
       <div v-if="isLoading" class="loading-state">
+        <div class="loader" aria-label="Загрузка"></div>
         <p>Данные загружаются</p>
+      </div>
+
+      <div v-else-if="!hasTasks" class="empty-state">
+        <p>Задач нет</p>
       </div>
 
       <div v-else class="main__content">
@@ -65,6 +70,8 @@ export default {
       }))
     }
 
+    const hasTasks = computed(() => tasksData.value.length > 0)
+
     const noStatusTasks = computed(() =>
       adaptTasks(tasksData.value.filter((task) => task.status === 'no-status')),
     )
@@ -90,6 +97,7 @@ export default {
 
     return {
       isLoading,
+      hasTasks,
       noStatusTasks,
       todoTasks,
       inProgressTasks,
@@ -101,13 +109,80 @@ export default {
 </script>
 
 <style scoped>
+.main__block {
+  width: 100%;
+  margin: 0 auto;
+  padding: 25px 0 49px;
+}
+
+.main__content {
+  width: 100%;
+  display: flex;
+}
+
 .loading-state {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 16px;
   min-height: 300px;
   font-size: 18px;
   font-weight: 500;
-  color: #94a6be;
+  color: var(--color-text-secondary);
+}
+
+.loading-state p {
+  animation: loader-text-pulse 1.6s ease-in-out infinite;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid var(--color-border-light);
+  border-top-color: var(--color-accent);
+  animation: loader-spin 0.9s linear infinite;
+}
+
+@keyframes loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-text-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+@media screen and (max-width: 1200px) {
+  .main__block {
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 0 64px;
+  }
+
+  .main__content {
+    display: block;
+  }
 }
 </style>

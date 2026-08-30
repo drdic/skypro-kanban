@@ -28,3 +28,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.main {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg-content);
+}
+</style>

@@ -4,6 +4,7 @@
     <main class="main">
       <TaskDesk />
     </main>
+    <router-view />
   </div>
 </template>
 

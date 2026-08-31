@@ -17,9 +17,29 @@ if (redirectQuery.startsWith('?/')) {
 const routes = [
   {
     path: '/',
-    name: 'home',
     component: HomeView,
     meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'home',
+      },
+      {
+        path: 'card/:id',
+        name: 'card',
+        component: CardView,
+      },
+      {
+        path: 'add',
+        name: 'add',
+        component: AddCardView,
+      },
+      {
+        path: 'exit',
+        name: 'exit',
+        component: ExitView,
+      },
+    ],
   },
   {
     path: '/login',
@@ -30,24 +50,6 @@ const routes = [
     path: '/register',
     name: 'register',
     component: RegisterView,
-  },
-  {
-    path: '/card/:id',
-    name: 'card',
-    component: CardView,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/add',
-    name: 'add',
-    component: AddCardView,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/exit',
-    name: 'exit',
-    component: ExitView,
-    meta: { requiresAuth: true },
   },
   {
     path: '/:pathMatch(.*)*',

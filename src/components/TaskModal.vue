@@ -139,16 +139,32 @@
                 <p class="_orange">Web Design</p>
               </div>
             </div>
-            <div class="pop-browse__btn-browse">
+            <div class="pop-browse__btn-browse" :class="{ _hide: isEditing }">
               <div class="btn-group">
-                <button class="btn-browse__edit _btn-bor _hover03">
-                  <router-link to="/">Редактировать задачу</router-link>
+                <button class="btn-browse__edit _btn-bor _hover03" @click="isEditing = true">
+                  Редактировать задачу
                 </button>
                 <button class="btn-browse__delete _btn-bor _hover03">
                   <router-link to="/">Удалить задачу</router-link>
                 </button>
               </div>
               <button class="btn-browse__close _btn-bg _hover01">
+                <router-link to="/">Закрыть</router-link>
+              </button>
+            </div>
+            <div class="pop-browse__btn-edit" :class="{ _hide: !isEditing }">
+              <div class="btn-group">
+                <button class="btn-edit__edit _btn-bg _hover01" @click="isEditing = false">
+                  Сохранить
+                </button>
+                <button class="btn-edit__edit _btn-bor _hover03" @click="isEditing = false">
+                  Отменить
+                </button>
+                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
+                  <router-link to="/">Удалить задачу</router-link>
+                </button>
+              </div>
+              <button class="btn-edit__close _btn-bg _hover01">
                 <router-link to="/">Закрыть</router-link>
               </button>
             </div>
@@ -167,6 +183,11 @@ export default {
       type: [String, Number],
       default: null,
     },
+  },
+  data() {
+    return {
+      isEditing: false,
+    }
   },
 }
 </script>
@@ -271,6 +292,10 @@ export default {
 .pop-browse__btn-browse .btn-group button,
 .pop-browse__btn-edit .btn-group button {
   margin-right: 8px;
+}
+
+._hide {
+  display: none !important;
 }
 
 .form-browse__block {

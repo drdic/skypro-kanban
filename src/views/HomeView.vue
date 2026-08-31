@@ -2,7 +2,9 @@
   <div class="wrapper">
     <BaseHeader />
     <main class="main">
-      <TaskDesk />
+      <keep-alive>
+        <TaskDesk />
+      </keep-alive>
     </main>
     <router-view />
   </div>

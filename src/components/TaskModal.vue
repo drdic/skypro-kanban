@@ -38,7 +38,7 @@
                     class="form-browse__area"
                     name="text"
                     id="textArea01"
-                    readonly
+                    :readonly="!isEditing"
                     placeholder="Введите описание задачи..."
                   ></textarea>
                 </div>

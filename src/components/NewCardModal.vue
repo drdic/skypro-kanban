@@ -133,7 +133,7 @@
                 </div>
               </div>
             </div>
-            <router-link to="/" class="form-new__create _hover01" id="btnCreate">Создать задачу</router-link>
+            <button class="form-new__create _hover01" id="btnCreate" @click="$router.push('/')">Создать задачу</button>
           </div>
         </div>
       </div>

@@ -152,22 +152,6 @@
                 <router-link to="/">Закрыть</router-link>
               </button>
             </div>
-            <div class="pop-browse__btn-edit _hide">
-              <div class="btn-group">
-                <button class="btn-edit__edit _btn-bg _hover01">
-                  <router-link to="/">Сохранить</router-link>
-                </button>
-                <button class="btn-edit__edit _btn-bor _hover03">
-                  <router-link to="/">Отменить</router-link>
-                </button>
-                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
-                  <router-link to="/">Удалить задачу</router-link>
-                </button>
-              </div>
-              <button class="btn-edit__close _btn-bg _hover01">
-                <router-link to="/">Закрыть</router-link>
-              </button>
-            </div>
           </div>
         </div>
       </div>

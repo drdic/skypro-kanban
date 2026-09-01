@@ -1,22 +1,18 @@
 <template>
   <div class="cards__item">
-    <div class="cards__card card">
+    <router-link :to="`/card/${task.id}`" class="cards__card card">
       <div class="card__group">
         <div :class="['card__theme', `_${task.theme}`]">
           <p :class="`_${task.theme}`">{{ task.category }}</p>
         </div>
-        <a href="#popBrowse" target="_self">
-          <div class="card__btn">
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </a>
+        <div class="card__btn">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       </div>
       <div class="card__content">
-        <a href="" target="_blank">
-          <h3 class="card__title">{{ task.title }}</h3>
-        </a>
+        <h3 class="card__title">{{ task.title }}</h3>
         <div class="card__date">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -49,7 +45,7 @@
           <p>{{ task.date }}</p>
         </div>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -80,6 +76,8 @@ export default {
   align-items: flex-start;
   justify-content: stretch;
   padding: 15px 13px 19px;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .card__group {

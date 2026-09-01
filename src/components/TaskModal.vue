@@ -5,7 +5,7 @@
         <div class="pop-browse__block">
           <div class="pop-browse__content">
             <div class="pop-browse__top-block">
-              <h3 class="pop-browse__ttl">Название задачи</h3>
+              <h3 class="pop-browse__ttl">Задача №{{ taskId }}</h3>
               <div class="categories__theme theme-top _orange _active-category">
                 <p class="_orange">Web Design</p>
               </div>
@@ -38,7 +38,7 @@
                     class="form-browse__area"
                     name="text"
                     id="textArea01"
-                    readonly
+                    :readonly="!isEditing"
                     placeholder="Введите описание задачи..."
                   ></textarea>
                 </div>
@@ -139,26 +139,34 @@
                 <p class="_orange">Web Design</p>
               </div>
             </div>
-            <div class="pop-browse__btn-browse">
+            <div class="pop-browse__btn-browse" :class="{ _hide: isEditing }">
               <div class="btn-group">
-                <button class="btn-browse__edit _btn-bor _hover03">
-                  <a href="#">Редактировать задачу</a>
+                <button class="btn-browse__edit _btn-bor _hover03" @click="isEditing = true">
+                  Редактировать задачу
                 </button>
                 <button class="btn-browse__delete _btn-bor _hover03">
-                  <a href="#">Удалить задачу</a>
+                  <router-link to="/">Удалить задачу</router-link>
                 </button>
               </div>
-              <button class="btn-browse__close _btn-bg _hover01"><a href="#">Закрыть</a></button>
+              <button class="btn-browse__close _btn-bg _hover01">
+                <router-link to="/">Закрыть</router-link>
+              </button>
             </div>
-            <div class="pop-browse__btn-edit _hide">
+            <div class="pop-browse__btn-edit" :class="{ _hide: !isEditing }">
               <div class="btn-group">
-                <button class="btn-edit__edit _btn-bg _hover01"><a href="#">Сохранить</a></button>
-                <button class="btn-edit__edit _btn-bor _hover03"><a href="#">Отменить</a></button>
+                <button class="btn-edit__edit _btn-bg _hover01" @click="isEditing = false">
+                  Сохранить
+                </button>
+                <button class="btn-edit__edit _btn-bor _hover03" @click="isEditing = false">
+                  Отменить
+                </button>
                 <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
-                  <a href="#">Удалить задачу</a>
+                  <router-link to="/">Удалить задачу</router-link>
                 </button>
               </div>
-              <button class="btn-edit__close _btn-bg _hover01"><a href="#">Закрыть</a></button>
+              <button class="btn-edit__close _btn-bg _hover01">
+                <router-link to="/">Закрыть</router-link>
+              </button>
             </div>
           </div>
         </div>
@@ -170,12 +178,23 @@
 <script>
 export default {
   name: 'TaskModal',
+  props: {
+    taskId: {
+      type: [String, Number],
+      default: null,
+    },
+  },
+  data() {
+    return {
+      isEditing: false,
+    }
+  },
 }
 </script>
 
 <style scoped>
 .pop-browse {
-  display: none;
+  display: block;
   width: 100%;
   height: 100%;
   min-width: 375px;
@@ -184,10 +203,6 @@ export default {
   top: 0;
   left: 0;
   z-index: 7;
-}
-
-.pop-browse:target {
-  display: block;
 }
 
 .pop-browse__container {
@@ -277,6 +292,10 @@ export default {
 .pop-browse__btn-browse .btn-group button,
 .pop-browse__btn-edit .btn-group button {
   margin-right: 8px;
+}
+
+._hide {
+  display: none !important;
 }
 
 .form-browse__block {

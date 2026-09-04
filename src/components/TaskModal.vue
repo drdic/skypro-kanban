@@ -186,7 +186,7 @@ export default {
     formattedDate() {
       const parsed = this.parseDateParts(this.task?.date)
       if (!parsed) return '—'
-      return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month + 1).padStart(2, '0')}.${String(parsed.year).slice(2)}`
+      return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month + 1).padStart(2, '0')}.${parsed.year}`
     },
     monthLabel() {
       const months = [
@@ -298,9 +298,10 @@ export default {
     selectDay(cell) {
       if (!this.isEditing || cell.other) return
       this.selectedDate = cell.day
+      const pad2 = (n) => String(n).padStart(2, '0')
       this.task = {
         ...this.task,
-        date: `${String(cell.day).padStart(2, '0')}.${String(this.month + 1).padStart(2, '0')}.${this.year}`,
+        date: `${this.year}-${pad2(this.month + 1)}-${pad2(cell.day)}T00:00:00.000Z`,
       }
     },
     async handleSave() {

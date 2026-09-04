@@ -546,6 +546,7 @@ export default {
   border-radius: 24px;
   margin-right: 7px;
   opacity: 0.4;
+  cursor: pointer;
 }
 
 .categories__theme p {

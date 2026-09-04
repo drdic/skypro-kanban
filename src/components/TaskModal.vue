@@ -521,6 +521,7 @@ export default {
   padding: 11px 14px 10px;
   margin-right: 7px;
   margin-bottom: 7px;
+  cursor: pointer;
 }
 
 .status__theme p {
@@ -701,6 +702,7 @@ export default {
   border-radius: 24px;
   margin-right: 7px;
   opacity: 0.4;
+  cursor: pointer;
 }
 
 .categories__theme p {

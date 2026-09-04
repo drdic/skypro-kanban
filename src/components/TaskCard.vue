@@ -42,7 +42,7 @@
               </clipPath>
             </defs>
           </svg>
-          <p>{{ task.date }}</p>
+          <p>{{ formattedDate }}</p>
         </div>
       </div>
     </router-link>
@@ -54,6 +54,21 @@ export default {
   name: 'TaskCard',
   props: {
     task: Object,
+  },
+  computed: {
+    formattedDate() {
+      const dateStr = this.task?.date
+      if (!dateStr) return ''
+      // ISO формат: YYYY-MM-DDTHH:mm:ss.sssZ
+      const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/)
+      if (isoMatch) {
+        return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1]}`
+      }
+      // Формат: DD.MM.YYYY
+      const parts = dateStr.split('.')
+      if (parts.length === 3) return `${parts[0]}.${parts[1]}.${parts[2]}`
+      return dateStr
+    },
   },
 }
 </script>

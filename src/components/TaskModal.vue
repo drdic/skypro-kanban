@@ -13,20 +13,17 @@
             <div class="pop-browse__status status">
               <p class="status__p subttl">Статус</p>
               <div class="status__themes">
-                <div class="status__theme _hide">
-                  <p>Без статуса</p>
-                </div>
-                <div class="status__theme _gray">
-                  <p class="_gray">Нужно сделать</p>
-                </div>
-                <div class="status__theme _hide">
-                  <p>В работе</p>
-                </div>
-                <div class="status__theme _hide">
-                  <p>Тестирование</p>
-                </div>
-                <div class="status__theme _hide">
-                  <p>Готово</p>
+                <div
+                  v-for="status in statuses"
+                  :key="status"
+                  class="status__theme"
+                  :class="{
+                    _gray: task?.status === status,
+                    _hide: !isEditing && task?.status !== status,
+                  }"
+                  @click="selectStatus(status)"
+                >
+                  <p :class="{ _gray: task?.status === status }">{{ status }}</p>
                 </div>
               </div>
             </div>
@@ -59,9 +56,9 @@
                 <p class="calendar__ttl subttl">Даты</p>
                 <div class="calendar__block">
                   <div class="calendar__nav">
-                    <div class="calendar__month">Сентябрь 2023</div>
+                    <div class="calendar__month">{{ monthLabel }}</div>
                     <div class="nav__actions">
-                      <div class="nav__action" data-action="prev">
+                      <div class="nav__action" @click="changeMonth(-1)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="6"
@@ -73,7 +70,7 @@
                           />
                         </svg>
                       </div>
-                      <div class="nav__action" data-action="next">
+                      <div class="nav__action" @click="changeMonth(1)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="6"
@@ -98,48 +95,21 @@
                       <div class="calendar__day-name -weekend-">вс</div>
                     </div>
                     <div class="calendar__cells">
-                      <div class="calendar__cell _other-month">28</div>
-                      <div class="calendar__cell _other-month">29</div>
-                      <div class="calendar__cell _other-month">30</div>
-                      <div class="calendar__cell _cell-day">31</div>
-                      <div class="calendar__cell _cell-day">1</div>
-                      <div class="calendar__cell _cell-day _weekend">2</div>
-                      <div class="calendar__cell _cell-day _weekend">3</div>
-                      <div class="calendar__cell _cell-day">4</div>
-                      <div class="calendar__cell _cell-day">5</div>
-                      <div class="calendar__cell _cell-day">6</div>
-                      <div class="calendar__cell _cell-day">7</div>
-                      <div class="calendar__cell _cell-day _current">8</div>
-                      <div class="calendar__cell _cell-day _weekend _active-day">9</div>
-                      <div class="calendar__cell _cell-day _weekend">10</div>
-                      <div class="calendar__cell _cell-day">11</div>
-                      <div class="calendar__cell _cell-day">12</div>
-                      <div class="calendar__cell _cell-day">13</div>
-                      <div class="calendar__cell _cell-day">14</div>
-                      <div class="calendar__cell _cell-day">15</div>
-                      <div class="calendar__cell _cell-day _weekend">16</div>
-                      <div class="calendar__cell _cell-day _weekend">17</div>
-                      <div class="calendar__cell _cell-day">18</div>
-                      <div class="calendar__cell _cell-day">19</div>
-                      <div class="calendar__cell _cell-day">20</div>
-                      <div class="calendar__cell _cell-day">21</div>
-                      <div class="calendar__cell _cell-day">22</div>
-                      <div class="calendar__cell _cell-day _weekend">23</div>
-                      <div class="calendar__cell _cell-day _weekend">24</div>
-                      <div class="calendar__cell _cell-day">25</div>
-                      <div class="calendar__cell _cell-day">26</div>
-                      <div class="calendar__cell _cell-day">27</div>
-                      <div class="calendar__cell _cell-day">28</div>
-                      <div class="calendar__cell _cell-day">29</div>
-                      <div class="calendar__cell _cell-day _weekend">30</div>
-                      <div class="calendar__cell _other-month _weekend">1</div>
+                      <div
+                        v-for="cell in calendarCells"
+                        :key="cell.key"
+                        class="calendar__cell"
+                        :class="cell.cls"
+                        @click="selectDay(cell)"
+                      >
+                        {{ cell.day }}
+                      </div>
                     </div>
                   </div>
 
-                  <input type="hidden" id="datepick_value" value="08.09.2023" />
                   <div class="calendar__period">
                     <p class="calendar__p date-end">
-                      Срок исполнения: <span class="date-control">09.09.23</span>
+                      Срок исполнения: <span class="date-control">{{ formattedDate }}</span>
                     </p>
                   </div>
                 </div>
@@ -205,11 +175,71 @@ export default {
       isLoading: true,
       task: {},
       error: '',
+      statuses: ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'],
+      month: 8,
+      year: 2023,
+      selectedDate: null,
     }
+  },
+  computed: {
+    formattedDate() {
+      if (!this.task?.date) return '—'
+      const parts = this.task.date.split('.')
+      if (parts.length === 3) return `${parts[0]}.${parts[1]}.${parts[2].slice(2)}`
+      return this.task.date
+    },
+    monthLabel() {
+      const months = [
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь',
+      ]
+      return `${months[this.month]} ${this.year}`
+    },
+    calendarCells() {
+      // Пн-Вс: 0..6
+      const firstDayOffset = (new Date(this.year, this.month, 1).getDay() + 6) % 7
+      const daysInMonth = new Date(this.year, this.month + 1, 0).getDate()
+      const daysInPrevMonth = new Date(this.year, this.month, 0).getDate()
+      const cells = []
+
+      for (let i = 0; i < firstDayOffset; i++) {
+        const day = daysInPrevMonth - firstDayOffset + i + 1
+        cells.push({ day, other: true, key: `prev-${i}`, cls: '_other-month' })
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isSelected = this.selectedDate === d
+        const isToday = d === new Date().getDate() && this.month === new Date().getMonth() && this.year === new Date().getFullYear()
+        const weekday = (firstDayOffset + d - 1) % 7
+        const cls = []
+        if (isSelected) cls.push('_active-day')
+        if (isToday) cls.push('_current')
+        if (weekday === 5 || weekday === 6) cls.push('_weekend')
+        cells.push({ day: d, other: false, key: `day-${d}`, cls: cls.join(' ') })
+      }
+
+      return cells
+    },
   },
   async mounted() {
     try {
       this.task = await getTask(this.taskId)
+      const parts = this.task?.date?.split('.')
+      if (parts && parts.length === 3) {
+        this.selectedDate = Number(parts[0])
+        this.month = Number(parts[1]) - 1
+        this.year = Number(parts[2])
+      }
     } catch (err) {
       this.error = err.message
       if (err.status === 401) {
@@ -222,6 +252,31 @@ export default {
     }
   },
   methods: {
+    selectStatus(status) {
+      if (!this.isEditing) return
+      this.task = { ...this.task, status }
+    },
+    changeMonth(offset) {
+      let newMonth = this.month + offset
+      let newYear = this.year
+      if (newMonth < 0) {
+        newMonth = 11
+        newYear -= 1
+      } else if (newMonth > 11) {
+        newMonth = 0
+        newYear += 1
+      }
+      this.month = newMonth
+      this.year = newYear
+    },
+    selectDay(cell) {
+      if (!this.isEditing || cell.other) return
+      this.selectedDate = cell.day
+      this.task = {
+        ...this.task,
+        date: `${String(cell.day).padStart(2, '0')}.${String(this.month + 1).padStart(2, '0')}.${this.year}`,
+      }
+    },
     async handleSave() {
       if (!this.task?.title) {
         this.error = 'Введите название задачи'

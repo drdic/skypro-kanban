@@ -59,6 +59,16 @@ const router = useRouter()
 
 const register = async () => {
   error.value = ''
+
+  if (
+    !name.value.trim() ||
+    !email.value.trim() ||
+    !password.value.trim()
+  ) {
+    error.value = 'Пожалуйста, заполните все обязательные поля'
+    return
+  }
+
   isLoading.value = true
   try {
     const user = await signUp({

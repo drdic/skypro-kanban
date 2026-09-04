@@ -48,6 +48,12 @@ const router = useRouter()
 
 const login = async () => {
   error.value = ''
+
+  if (!loginInput.value.trim() || !password.value.trim()) {
+    error.value = 'Пожалуйста, заполните все обязательные поля'
+    return
+  }
+
   isLoading.value = true
   try {
     const user = await signIn({

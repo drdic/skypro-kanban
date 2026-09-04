@@ -37,3 +37,8 @@ __screenshots__/
 
 # Личные заметки (не попадают в git/на GitHub — удалить перед сдачей)
 HW_NOTES.md
+
+# Учебные материалы hw-5 (не попадают в git/на GitHub)
+VUE-hw-5.txt
+api-kanban.txt
+Конспект. Работа с API и v-model.pdf

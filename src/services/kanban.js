@@ -43,7 +43,10 @@ export const getTask = async (id) => {
 export const createTask = async (data) => {
   try {
     const response = await axios.post(API_URL, data, {
-      headers: getHeaders(),
+      headers: {
+        ...getHeaders(),
+        'Content-Type': '',
+      },
     })
     return response.data.tasks
   } catch (error) {
@@ -55,7 +58,10 @@ export const createTask = async (data) => {
 export const updateTask = async (id, data) => {
   try {
     const response = await axios.put(`${API_URL}/${id}`, data, {
-      headers: getHeaders(),
+      headers: {
+        ...getHeaders(),
+        'Content-Type': '',
+      },
     })
     return response.data.tasks
   } catch (error) {

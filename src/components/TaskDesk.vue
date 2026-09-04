@@ -36,7 +36,8 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { getTasks } from '../services/kanban.js'
 import TaskColumn from './TaskColumn.vue'
 import TaskCard from './TaskCard.vue'
@@ -48,6 +49,7 @@ export default {
     TaskCard,
   },
   setup() {
+    const route = useRoute()
     const isLoading = ref(true)
     const tasksData = ref([])
 
@@ -108,8 +110,8 @@ export default {
       ),
     )
 
-    const loadTasks = async () => {
-      isLoading.value = true
+    const loadTasks = async (showLoader = true) => {
+      if (showLoader) isLoading.value = true
       try {
         tasksData.value = await getTasks()
       } catch (error) {
@@ -124,7 +126,18 @@ export default {
       }
     }
 
-    onMounted(loadTasks)
+    onMounted(() => loadTasks(true))
+
+    // При возврате на доску (из модалки карточки/создания) обновляем данные,
+    // чтобы карточка сразу перемещалась в нужный столбец после смены статуса
+    watch(
+      () => route.name,
+      (name) => {
+        if (name === 'home') {
+          loadTasks(false)
+        }
+      },
+    )
 
     return {
       isLoading,

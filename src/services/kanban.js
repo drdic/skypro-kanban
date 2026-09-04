@@ -8,6 +8,13 @@ const getHeaders = () => ({
   Authorization: `Bearer ${getToken()}`,
 })
 
+// Обёртка: сохраняем HTTP-статус на объекте ошибки, чтобы можно было ловить 401
+const makeError = (error, fallback) => {
+  const err = new Error(error.response?.data?.error || fallback)
+  err.status = error.response?.status
+  return err
+}
+
 // Получить список всех задач
 export const getTasks = async () => {
   try {
@@ -16,7 +23,7 @@ export const getTasks = async () => {
     })
     return response.data.tasks
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка при получении задач')
+    throw makeError(error, 'Ошибка при получении задач')
   }
 }
 
@@ -28,7 +35,7 @@ export const getTask = async (id) => {
     })
     return response.data.task
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка при получении задачи')
+    throw makeError(error, 'Ошибка при получении задачи')
   }
 }
 
@@ -40,7 +47,7 @@ export const createTask = async (data) => {
     })
     return response.data.tasks
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка при создании задачи')
+    throw makeError(error, 'Ошибка при создании задачи')
   }
 }
 
@@ -52,7 +59,7 @@ export const updateTask = async (id, data) => {
     })
     return response.data.tasks
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка при обновлении задачи')
+    throw makeError(error, 'Ошибка при обновлении задачи')
   }
 }
 
@@ -64,6 +71,6 @@ export const deleteTask = async (id) => {
     })
     return response.data.tasks
   } catch (error) {
-    throw new Error(error.response?.data?.error || 'Ошибка при удалении задачи')
+    throw makeError(error, 'Ошибка при удалении задачи')
   }
 }

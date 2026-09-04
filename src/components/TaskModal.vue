@@ -7,7 +7,7 @@
             <div class="pop-browse__top-block">
               <h3 class="pop-browse__ttl">Задача №{{ taskId }}</h3>
               <div class="categories__theme theme-top _orange _active-category">
-                <p class="_orange">Web Design</p>
+                <p class="_orange">{{ task?.topic || 'Без категории' }}</p>
               </div>
             </div>
             <div class="pop-browse__status status">
@@ -33,6 +33,17 @@
             <div class="pop-browse__wrap">
               <form class="pop-browse__form form-browse" id="formBrowseCard" action="#">
                 <div class="form-browse__block">
+                  <label for="formTitle" class="subttl">Название задачи</label>
+                  <input
+                    class="form-browse__input"
+                    name="title"
+                    id="formTitle"
+                    type="text"
+                    :readonly="!isEditing"
+                    v-model="task.title"
+                  />
+                </div>
+                <div class="form-browse__block">
                   <label for="textArea01" class="subttl">Описание задачи</label>
                   <textarea
                     class="form-browse__area"
@@ -40,6 +51,7 @@
                     id="textArea01"
                     :readonly="!isEditing"
                     placeholder="Введите описание задачи..."
+                    v-model="task.description"
                   ></textarea>
                 </div>
               </form>
@@ -144,8 +156,8 @@
                 <button class="btn-browse__edit _btn-bor _hover03" @click="isEditing = true">
                   Редактировать задачу
                 </button>
-                <button class="btn-browse__delete _btn-bor _hover03">
-                  <router-link to="/">Удалить задачу</router-link>
+                <button class="btn-browse__delete _btn-bor _hover03" @click="handleDelete">
+                  Удалить задачу
                 </button>
               </div>
               <button class="btn-browse__close _btn-bg _hover01">
@@ -154,20 +166,21 @@
             </div>
             <div class="pop-browse__btn-edit" :class="{ _hide: !isEditing }">
               <div class="btn-group">
-                <button class="btn-edit__edit _btn-bg _hover01" @click="isEditing = false">
+                <button class="btn-edit__edit _btn-bg _hover01" @click="handleSave">
                   Сохранить
                 </button>
                 <button class="btn-edit__edit _btn-bor _hover03" @click="isEditing = false">
                   Отменить
                 </button>
-                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
-                  <router-link to="/">Удалить задачу</router-link>
+                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete" @click="handleDelete">
+                  Удалить задачу
                 </button>
               </div>
               <button class="btn-edit__close _btn-bg _hover01">
                 <router-link to="/">Закрыть</router-link>
               </button>
             </div>
+            <p v-if="error" class="pop-browse__error">{{ error }}</p>
           </div>
         </div>
       </div>
@@ -176,6 +189,8 @@
 </template>
 
 <script>
+import { getTask, updateTask, deleteTask } from '../services/kanban.js'
+
 export default {
   name: 'TaskModal',
   props: {
@@ -187,7 +202,53 @@ export default {
   data() {
     return {
       isEditing: false,
+      isLoading: true,
+      task: {},
+      error: '',
     }
+  },
+  async mounted() {
+    try {
+      this.task = await getTask(this.taskId)
+    } catch (err) {
+      this.error = err.message
+      if (err.status === 401) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        window.location.href = '/login'
+      }
+    } finally {
+      this.isLoading = false
+    }
+  },
+  methods: {
+    async handleSave() {
+      if (!this.task?.title) {
+        this.error = 'Введите название задачи'
+        return
+      }
+      try {
+        await updateTask(this.taskId, {
+          title: this.task.title,
+          description: this.task.description,
+          topic: this.task.topic,
+          status: this.task.status,
+          date: this.task.date,
+        })
+        this.isEditing = false
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.message
+      }
+    },
+    async handleDelete() {
+      try {
+        await deleteTask(this.taskId)
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.message
+      }
+    },
   },
 }
 </script>
@@ -303,7 +364,8 @@ export default {
   flex-direction: column;
 }
 
-.form-browse__area {
+.form-browse__area,
+.form-browse__input {
   max-width: 370px;
   width: 100%;
   outline: none;
@@ -315,7 +377,17 @@ export default {
   line-height: 1;
   letter-spacing: -0.14px;
   margin-top: 14px;
+  box-sizing: border-box;
+}
+
+.form-browse__area {
   height: 200px;
+}
+
+.pop-browse__error {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-top: 12px;
 }
 
 .form-browse__area::placeholder {

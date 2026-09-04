@@ -37,7 +37,7 @@
 
 <script>
 import { ref, onMounted, computed } from 'vue'
-import { tasks } from './mocks/tasks.js'
+import { getTasks } from '../services/kanban.js'
 import TaskColumn from './TaskColumn.vue'
 import TaskCard from './TaskCard.vue'
 
@@ -60,9 +60,17 @@ export default {
       return themeMap[topic] || 'orange'
     }
 
+    const statusMap = {
+      'Без статуса': 'no-status',
+      'Нужно сделать': 'todo',
+      'В работе': 'in-progress',
+      'Тестирование': 'testing',
+      'Готово': 'done',
+    }
+
     const adaptTasks = (taskList) => {
       return taskList.map((task) => ({
-        id: task.id,
+        id: task._id,
         title: task.title,
         category: task.topic,
         theme: getThemeColor(task.topic),
@@ -73,27 +81,50 @@ export default {
     const hasTasks = computed(() => tasksData.value.length > 0)
 
     const noStatusTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'no-status')),
+      adaptTasks(
+        tasksData.value.filter((task) => statusMap[task.status] === 'no-status'),
+      ),
     )
     const todoTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'todo')),
+      adaptTasks(
+        tasksData.value.filter((task) => statusMap[task.status] === 'todo'),
+      ),
     )
     const inProgressTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'in-progress')),
+      adaptTasks(
+        tasksData.value.filter(
+          (task) => statusMap[task.status] === 'in-progress',
+        ),
+      ),
     )
     const testingTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'testing')),
+      adaptTasks(
+        tasksData.value.filter((task) => statusMap[task.status] === 'testing'),
+      ),
     )
     const doneTasks = computed(() =>
-      adaptTasks(tasksData.value.filter((task) => task.status === 'done')),
+      adaptTasks(
+        tasksData.value.filter((task) => statusMap[task.status] === 'done'),
+      ),
     )
 
-    onMounted(() => {
-      setTimeout(() => {
-        tasksData.value = tasks
+    const loadTasks = async () => {
+      isLoading.value = true
+      try {
+        tasksData.value = await getTasks()
+      } catch (error) {
+        // При ошибке авторизации возвращаем на логин
+        if (error.status === 401) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          window.location.href = '/login'
+        }
+      } finally {
         isLoading.value = false
-      }, 2000)
-    })
+      }
+    }
+
+    onMounted(loadTasks)
 
     return {
       isLoading,

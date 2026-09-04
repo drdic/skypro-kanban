@@ -104,14 +104,14 @@
             <div class="pop-new-card__categories categories">
               <p class="categories__p subttl">Категория</p>
               <div class="categories__themes">
-                <div class="categories__theme _orange _active-category">
-                  <p class="_orange">Web Design</p>
-                </div>
-                <div class="categories__theme _green">
-                  <p class="_green">Research</p>
-                </div>
-                <div class="categories__theme _purple">
-                  <p class="_purple">Copywriting</p>
+                <div
+                  v-for="cat in categories"
+                  :key="cat.name"
+                  class="categories__theme"
+                  :class="[cat.theme, { '_active-category': category === cat.name }]"
+                  @click="category = cat.name"
+                >
+                  <p :class="cat.theme">{{ cat.name }}</p>
                 </div>
               </div>
             </div>
@@ -135,6 +135,12 @@ export default {
     const title = ref('')
     const description = ref('')
     const error = ref('')
+    const category = ref('Web Design')
+    const categories = [
+      { name: 'Web Design', theme: '_orange' },
+      { name: 'Research', theme: '_green' },
+      { name: 'Copywriting', theme: '_purple' },
+    ]
 
     // Календарь
     const now = new Date()
@@ -189,7 +195,7 @@ export default {
 
     const selectedDateLabel = computed(() => {
       if (selectedDate.value === null) return ''
-      return `${String(selectedDate.value).padStart(2, '0')}.${String(month.value + 1).padStart(2, '0')}.${year.value}`
+      return `${String(selectedDate.value).padStart(2, '0')}.${String(month.value + 1).padStart(2, '0')}.${String(year.value).slice(2)}`
     })
 
     const changeMonth = (offset) => {
@@ -227,6 +233,7 @@ export default {
         await createTask({
           title: title.value,
           description: description.value,
+          topic: category.value,
           date,
         })
         router.push('/')
@@ -239,6 +246,8 @@ export default {
       title,
       description,
       error,
+      category,
+      categories,
       monthLabel,
       calendarCells,
       selectedDateLabel,

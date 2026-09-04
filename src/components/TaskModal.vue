@@ -115,10 +115,18 @@
                 </div>
               </div>
             </div>
-            <div class="theme-down__categories theme-down">
+            <div class="theme-down__categories theme-down" :class="{ _hide: !isEditing }">
               <p class="categories__p subttl">Категория</p>
-              <div class="categories__theme _orange _active-category">
-                <p class="_orange">Web Design</p>
+              <div class="categories__themes">
+                <div
+                  v-for="cat in categories"
+                  :key="cat.name"
+                  class="categories__theme"
+                  :class="[cat.theme, { '_active-category': task?.topic === cat.name }]"
+                  @click="selectCategory(cat.name)"
+                >
+                  <p :class="cat.theme">{{ cat.name }}</p>
+                </div>
               </div>
             </div>
             <div class="pop-browse__btn-browse" :class="{ _hide: isEditing }">
@@ -180,13 +188,18 @@ export default {
       year: 2023,
       selectedDate: null,
       taskNumber: 1,
+      categories: [
+        { name: 'Web Design', theme: '_orange' },
+        { name: 'Research', theme: '_green' },
+        { name: 'Copywriting', theme: '_purple' },
+      ],
     }
   },
   computed: {
     formattedDate() {
       const parsed = this.parseDateParts(this.task?.date)
       if (!parsed) return '—'
-      return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month + 1).padStart(2, '0')}.${parsed.year}`
+      return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month + 1).padStart(2, '0')}.${String(parsed.year).slice(2)}`
     },
     monthLabel() {
       const months = [
@@ -277,6 +290,10 @@ export default {
         }
       }
       return null
+    },
+    selectCategory(name) {
+      if (!this.isEditing) return
+      this.task = { ...this.task, topic: name }
     },
     selectStatus(status) {
       if (!this.isEditing) return
@@ -377,12 +394,7 @@ export default {
   text-align: left;
 }
 
-.pop-browse__content .categories__theme {
-  opacity: 1;
-}
-
 .pop-browse__content .theme-down {
-  display: none;
   margin-bottom: 20px;
 }
 

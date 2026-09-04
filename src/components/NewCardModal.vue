@@ -232,7 +232,7 @@ export default {
 
         await createTask({
           title: title.value,
-          description: description.value,
+          description: description.value.trim() || 'Без описания',
           topic: category.value,
           date,
         })

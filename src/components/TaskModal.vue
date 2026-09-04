@@ -329,7 +329,7 @@ export default {
       try {
         await updateTask(this.taskId, {
           title: this.task.title,
-          description: this.task.description,
+          description: this.task.description?.trim() || 'Без описания',
           topic: this.task.topic,
           status: this.task.status,
           date: this.task.date,

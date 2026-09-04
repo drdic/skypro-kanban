@@ -60,13 +60,13 @@ body {
 
 ._hover03:hover,
 ._hover03:active {
-  background-color: var(--color-accent);
-  color: var(--color-text-white);
+  background-color: var(--color-accent) !important;
+  color: var(--color-text-white) !important;
 }
 
 ._hover03:hover a,
 ._hover03:active a {
-  color: var(--color-text-white);
+  color: var(--color-text-white) !important;
 }
 
 ._orange {

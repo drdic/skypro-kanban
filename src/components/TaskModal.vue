@@ -215,7 +215,7 @@ export default {
       if (err.status === 401) {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
-        window.location.href = '/login'
+        window.location.href = import.meta.env.BASE_URL + 'login'
       }
     } finally {
       this.isLoading = false

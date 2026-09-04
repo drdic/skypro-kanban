@@ -5,7 +5,7 @@
         <div class="pop-browse__block">
           <div class="pop-browse__content">
             <div class="pop-browse__top-block">
-              <h3 class="pop-browse__ttl">Задача №{{ taskId }}</h3>
+              <h3 class="pop-browse__ttl">Задача №{{ taskNumber }}</h3>
               <div class="categories__theme theme-top _orange _active-category">
                 <p class="_orange">{{ task?.topic || 'Без категории' }}</p>
               </div>
@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import { getTask, updateTask, deleteTask } from '../services/kanban.js'
+import { getTask, getTasks, updateTask, deleteTask } from '../services/kanban.js'
 
 export default {
   name: 'TaskModal',
@@ -179,14 +179,14 @@ export default {
       month: 8,
       year: 2023,
       selectedDate: null,
+      taskNumber: 1,
     }
   },
   computed: {
     formattedDate() {
-      if (!this.task?.date) return '—'
-      const parts = this.task.date.split('.')
-      if (parts.length === 3) return `${parts[0]}.${parts[1]}.${parts[2].slice(2)}`
-      return this.task.date
+      const parsed = this.parseDateParts(this.task?.date)
+      if (!parsed) return '—'
+      return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month + 1).padStart(2, '0')}.${String(parsed.year).slice(2)}`
     },
     monthLabel() {
       const months = [
@@ -234,12 +234,16 @@ export default {
   async mounted() {
     try {
       this.task = await getTask(this.taskId)
-      const parts = this.task?.date?.split('.')
-      if (parts && parts.length === 3) {
-        this.selectedDate = Number(parts[0])
-        this.month = Number(parts[1]) - 1
-        this.year = Number(parts[2])
+      const parsed = this.parseDateParts(this.task?.date)
+      if (parsed) {
+        this.selectedDate = parsed.day
+        this.month = parsed.month
+        this.year = parsed.year
       }
+      // Порядковый номер задачи по её позиции в общем списке
+      const allTasks = await getTasks()
+      const index = allTasks.findIndex((t) => t._id === this.taskId)
+      this.taskNumber = index !== -1 ? index + 1 : 1
     } catch (err) {
       this.error = err.message
       if (err.status === 401) {
@@ -252,6 +256,28 @@ export default {
     }
   },
   methods: {
+    parseDateParts(dateStr) {
+      if (!dateStr) return null
+      // ISO формат: YYYY-MM-DDTHH:mm:ss.sssZ
+      const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/)
+      if (isoMatch) {
+        return {
+          day: Number(isoMatch[3]),
+          month: Number(isoMatch[2]) - 1,
+          year: Number(isoMatch[1]),
+        }
+      }
+      // Формат: DD.MM.YYYY
+      const parts = dateStr.split('.')
+      if (parts.length === 3) {
+        return {
+          day: Number(parts[0]),
+          month: Number(parts[1]) - 1,
+          year: Number(parts[2]),
+        }
+      }
+      return null
+    },
     selectStatus(status) {
       if (!this.isEditing) return
       this.task = { ...this.task, status }

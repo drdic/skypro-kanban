@@ -219,7 +219,6 @@ export default {
       return `${months[this.month]} ${this.year}`
     },
     calendarCells() {
-      // Пн-Вс: 0..6
       const firstDayOffset = (new Date(this.year, this.month, 1).getDay() + 6) % 7
       const daysInMonth = new Date(this.year, this.month + 1, 0).getDate()
       const daysInPrevMonth = new Date(this.year, this.month, 0).getDate()
@@ -253,7 +252,6 @@ export default {
         this.month = parsed.month
         this.year = parsed.year
       }
-      // Порядковый номер задачи по её позиции в общем списке
       const allTasks = await getTasks()
       const index = allTasks.findIndex((t) => t._id === this.taskId)
       this.taskNumber = index !== -1 ? index + 1 : 1
@@ -271,7 +269,6 @@ export default {
   methods: {
     parseDateParts(dateStr) {
       if (!dateStr) return null
-      // ISO формат: YYYY-MM-DDTHH:mm:ss.sssZ
       const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/)
       if (isoMatch) {
         return {
@@ -280,7 +277,6 @@ export default {
           year: Number(isoMatch[1]),
         }
       }
-      // Формат: DD.MM.YYYY
       const parts = dateStr.split('.')
       if (parts.length === 3) {
         return {

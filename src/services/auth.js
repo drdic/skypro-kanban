@@ -2,7 +2,6 @@ import axios from 'axios'
 
 const API_URL = 'https://wedev-api.sky.pro/api/user'
 
-// Авторизация (вход)
 export const signIn = async ({ login, password }) => {
   try {
     const response = await axios.post(
@@ -23,7 +22,6 @@ export const signIn = async ({ login, password }) => {
   }
 }
 
-// Регистрация нового пользователя
 export const signUp = async ({ name, login, password }) => {
   try {
     const response = await axios.post(

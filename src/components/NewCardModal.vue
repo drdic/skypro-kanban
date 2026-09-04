@@ -142,7 +142,6 @@ export default {
       { name: 'Copywriting', theme: '_purple' },
     ]
 
-    // Календарь
     const now = new Date()
     const month = ref(now.getMonth())
     const year = ref(now.getFullYear())

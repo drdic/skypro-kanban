@@ -115,7 +115,6 @@ export default {
       try {
         tasksData.value = await getTasks()
       } catch (error) {
-        // При ошибке авторизации возвращаем на логин
         if (error.status === 401) {
           localStorage.removeItem('token')
           localStorage.removeItem('user')
@@ -128,8 +127,6 @@ export default {
 
     onMounted(() => loadTasks(true))
 
-    // При возврате на доску (из модалки карточки/создания) обновляем данные,
-    // чтобы карточка сразу перемещалась в нужный столбец после смены статуса
     watch(
       () => route.name,
       (name) => {

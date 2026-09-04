@@ -8,14 +8,12 @@ const getHeaders = () => ({
   Authorization: `Bearer ${getToken()}`,
 })
 
-// Обёртка: сохраняем HTTP-статус на объекте ошибки, чтобы можно было ловить 401
 const makeError = (error, fallback) => {
   const err = new Error(error.response?.data?.error || fallback)
   err.status = error.response?.status
   return err
 }
 
-// Получить список всех задач
 export const getTasks = async () => {
   try {
     const response = await axios.get(API_URL, {
@@ -27,7 +25,6 @@ export const getTasks = async () => {
   }
 }
 
-// Получить одну задачу по id
 export const getTask = async (id) => {
   try {
     const response = await axios.get(`${API_URL}/${id}`, {
@@ -39,7 +36,6 @@ export const getTask = async (id) => {
   }
 }
 
-// Создать задачу
 export const createTask = async (data) => {
   try {
     const response = await axios.post(API_URL, data, {
@@ -54,7 +50,6 @@ export const createTask = async (data) => {
   }
 }
 
-// Обновить задачу
 export const updateTask = async (id, data) => {
   try {
     const response = await axios.put(`${API_URL}/${id}`, data, {
@@ -69,7 +64,6 @@ export const updateTask = async (id, data) => {
   }
 }
 
-// Удалить задачу
 export const deleteTask = async (id) => {
   try {
     const response = await axios.delete(`${API_URL}/${id}`, {

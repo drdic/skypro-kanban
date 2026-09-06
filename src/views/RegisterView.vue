@@ -33,7 +33,10 @@
             required
           >
         </div>
-        <button type="submit" class="register-button">Зарегистрироваться</button>
+        <p v-if="error" class="register-error">{{ error }}</p>
+        <button type="submit" class="register-button" :disabled="isLoading">
+          {{ isLoading ? 'Регистрация...' : 'Зарегистрироваться' }}
+        </button>
       </form>
       <router-link to="/login" class="login-link">
         Уже есть аккаунт? Войдите
@@ -45,15 +48,42 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { signUp } from '../services/auth.js'
 
 const name = ref('')
 const email = ref('')
 const password = ref('')
+const isLoading = ref(false)
+const error = ref('')
 const router = useRouter()
 
-const register = () => {
-  localStorage.setItem('isAuthenticated', 'true')
-  router.push('/')
+const register = async () => {
+  error.value = ''
+
+  if (
+    !name.value.trim() ||
+    !email.value.trim() ||
+    !password.value.trim()
+  ) {
+    error.value = 'Пожалуйста, заполните все обязательные поля'
+    return
+  }
+
+  isLoading.value = true
+  try {
+    const user = await signUp({
+      name: name.value,
+      login: email.value,
+      password: password.value,
+    })
+    localStorage.setItem('token', user.token)
+    localStorage.setItem('user', JSON.stringify(user))
+    router.push('/')
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 
@@ -124,6 +154,18 @@ const register = () => {
 
 .register-button:hover {
   background-color: var(--color-accent-hover);
+}
+
+.register-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.register-error {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 .login-link {

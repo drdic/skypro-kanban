@@ -5,33 +5,41 @@
         <div class="pop-browse__block">
           <div class="pop-browse__content">
             <div class="pop-browse__top-block">
-              <h3 class="pop-browse__ttl">Задача №{{ taskId }}</h3>
+              <h3 class="pop-browse__ttl">Задача №{{ taskNumber }}</h3>
               <div class="categories__theme theme-top _orange _active-category">
-                <p class="_orange">Web Design</p>
+                <p class="_orange">{{ task?.topic || 'Без категории' }}</p>
               </div>
             </div>
             <div class="pop-browse__status status">
               <p class="status__p subttl">Статус</p>
               <div class="status__themes">
-                <div class="status__theme _hide">
-                  <p>Без статуса</p>
-                </div>
-                <div class="status__theme _gray">
-                  <p class="_gray">Нужно сделать</p>
-                </div>
-                <div class="status__theme _hide">
-                  <p>В работе</p>
-                </div>
-                <div class="status__theme _hide">
-                  <p>Тестирование</p>
-                </div>
-                <div class="status__theme _hide">
-                  <p>Готово</p>
+                <div
+                  v-for="status in statuses"
+                  :key="status"
+                  class="status__theme"
+                  :class="{
+                    _gray: task?.status === status,
+                    _hide: !isEditing && task?.status !== status,
+                  }"
+                  @click="selectStatus(status)"
+                >
+                  <p :class="{ _gray: task?.status === status }">{{ status }}</p>
                 </div>
               </div>
             </div>
             <div class="pop-browse__wrap">
               <form class="pop-browse__form form-browse" id="formBrowseCard" action="#">
+                <div class="form-browse__block">
+                  <label for="formTitle" class="subttl">Название задачи</label>
+                  <input
+                    class="form-browse__input"
+                    name="title"
+                    id="formTitle"
+                    type="text"
+                    :readonly="!isEditing"
+                    v-model="task.title"
+                  />
+                </div>
                 <div class="form-browse__block">
                   <label for="textArea01" class="subttl">Описание задачи</label>
                   <textarea
@@ -40,6 +48,7 @@
                     id="textArea01"
                     :readonly="!isEditing"
                     placeholder="Введите описание задачи..."
+                    v-model="task.description"
                   ></textarea>
                 </div>
               </form>
@@ -47,9 +56,9 @@
                 <p class="calendar__ttl subttl">Даты</p>
                 <div class="calendar__block">
                   <div class="calendar__nav">
-                    <div class="calendar__month">Сентябрь 2023</div>
+                    <div class="calendar__month">{{ monthLabel }}</div>
                     <div class="nav__actions">
-                      <div class="nav__action" data-action="prev">
+                      <div class="nav__action" @click="changeMonth(-1)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="6"
@@ -61,7 +70,7 @@
                           />
                         </svg>
                       </div>
-                      <div class="nav__action" data-action="next">
+                      <div class="nav__action" @click="changeMonth(1)">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="6"
@@ -86,57 +95,38 @@
                       <div class="calendar__day-name -weekend-">вс</div>
                     </div>
                     <div class="calendar__cells">
-                      <div class="calendar__cell _other-month">28</div>
-                      <div class="calendar__cell _other-month">29</div>
-                      <div class="calendar__cell _other-month">30</div>
-                      <div class="calendar__cell _cell-day">31</div>
-                      <div class="calendar__cell _cell-day">1</div>
-                      <div class="calendar__cell _cell-day _weekend">2</div>
-                      <div class="calendar__cell _cell-day _weekend">3</div>
-                      <div class="calendar__cell _cell-day">4</div>
-                      <div class="calendar__cell _cell-day">5</div>
-                      <div class="calendar__cell _cell-day">6</div>
-                      <div class="calendar__cell _cell-day">7</div>
-                      <div class="calendar__cell _cell-day _current">8</div>
-                      <div class="calendar__cell _cell-day _weekend _active-day">9</div>
-                      <div class="calendar__cell _cell-day _weekend">10</div>
-                      <div class="calendar__cell _cell-day">11</div>
-                      <div class="calendar__cell _cell-day">12</div>
-                      <div class="calendar__cell _cell-day">13</div>
-                      <div class="calendar__cell _cell-day">14</div>
-                      <div class="calendar__cell _cell-day">15</div>
-                      <div class="calendar__cell _cell-day _weekend">16</div>
-                      <div class="calendar__cell _cell-day _weekend">17</div>
-                      <div class="calendar__cell _cell-day">18</div>
-                      <div class="calendar__cell _cell-day">19</div>
-                      <div class="calendar__cell _cell-day">20</div>
-                      <div class="calendar__cell _cell-day">21</div>
-                      <div class="calendar__cell _cell-day">22</div>
-                      <div class="calendar__cell _cell-day _weekend">23</div>
-                      <div class="calendar__cell _cell-day _weekend">24</div>
-                      <div class="calendar__cell _cell-day">25</div>
-                      <div class="calendar__cell _cell-day">26</div>
-                      <div class="calendar__cell _cell-day">27</div>
-                      <div class="calendar__cell _cell-day">28</div>
-                      <div class="calendar__cell _cell-day">29</div>
-                      <div class="calendar__cell _cell-day _weekend">30</div>
-                      <div class="calendar__cell _other-month _weekend">1</div>
+                      <div
+                        v-for="cell in calendarCells"
+                        :key="cell.key"
+                        class="calendar__cell"
+                        :class="cell.cls"
+                        @click="selectDay(cell)"
+                      >
+                        {{ cell.day }}
+                      </div>
                     </div>
                   </div>
 
-                  <input type="hidden" id="datepick_value" value="08.09.2023" />
                   <div class="calendar__period">
                     <p class="calendar__p date-end">
-                      Срок исполнения: <span class="date-control">09.09.23</span>
+                      Срок исполнения: <span class="date-control">{{ formattedDate }}</span>
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="theme-down__categories theme-down">
+            <div class="theme-down__categories theme-down" :class="{ _hide: !isEditing }">
               <p class="categories__p subttl">Категория</p>
-              <div class="categories__theme _orange _active-category">
-                <p class="_orange">Web Design</p>
+              <div class="categories__themes">
+                <div
+                  v-for="cat in categories"
+                  :key="cat.name"
+                  class="categories__theme"
+                  :class="[cat.theme, { '_active-category': task?.topic === cat.name }]"
+                  @click="selectCategory(cat.name)"
+                >
+                  <p :class="cat.theme">{{ cat.name }}</p>
+                </div>
               </div>
             </div>
             <div class="pop-browse__btn-browse" :class="{ _hide: isEditing }">
@@ -144,8 +134,8 @@
                 <button class="btn-browse__edit _btn-bor _hover03" @click="isEditing = true">
                   Редактировать задачу
                 </button>
-                <button class="btn-browse__delete _btn-bor _hover03">
-                  <router-link to="/">Удалить задачу</router-link>
+                <button class="btn-browse__delete _btn-bor _hover03" @click="handleDelete">
+                  Удалить задачу
                 </button>
               </div>
               <button class="btn-browse__close _btn-bg _hover01">
@@ -154,20 +144,21 @@
             </div>
             <div class="pop-browse__btn-edit" :class="{ _hide: !isEditing }">
               <div class="btn-group">
-                <button class="btn-edit__edit _btn-bg _hover01" @click="isEditing = false">
+                <button class="btn-edit__edit _btn-bg _hover01" @click="handleSave">
                   Сохранить
                 </button>
                 <button class="btn-edit__edit _btn-bor _hover03" @click="isEditing = false">
                   Отменить
                 </button>
-                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete">
-                  <router-link to="/">Удалить задачу</router-link>
+                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete" @click="handleDelete">
+                  Удалить задачу
                 </button>
               </div>
               <button class="btn-edit__close _btn-bg _hover01">
                 <router-link to="/">Закрыть</router-link>
               </button>
             </div>
+            <p v-if="error" class="pop-browse__error">{{ error }}</p>
           </div>
         </div>
       </div>
@@ -176,6 +167,9 @@
 </template>
 
 <script>
+import { getTask, updateTask, deleteTask } from '../services/kanban.js'
+import { board } from '../store/board.js'
+
 export default {
   name: 'TaskModal',
   props: {
@@ -187,7 +181,180 @@ export default {
   data() {
     return {
       isEditing: false,
+      isLoading: true,
+      task: {},
+      error: '',
+      statuses: ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'],
+      month: 8,
+      year: 2023,
+      selectedDate: null,
+      taskNumber: 1,
+      categories: [
+        { name: 'Web Design', theme: '_orange' },
+        { name: 'Research', theme: '_green' },
+        { name: 'Copywriting', theme: '_purple' },
+      ],
     }
+  },
+  computed: {
+    formattedDate() {
+      const parsed = this.parseDateParts(this.task?.date)
+      if (!parsed) return '—'
+      return `${String(parsed.day).padStart(2, '0')}.${String(parsed.month + 1).padStart(2, '0')}.${String(parsed.year).slice(2)}`
+    },
+    monthLabel() {
+      const months = [
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь',
+      ]
+      return `${months[this.month]} ${this.year}`
+    },
+    calendarCells() {
+      const firstDayOffset = (new Date(this.year, this.month, 1).getDay() + 6) % 7
+      const daysInMonth = new Date(this.year, this.month + 1, 0).getDate()
+      const daysInPrevMonth = new Date(this.year, this.month, 0).getDate()
+      const cells = []
+
+      for (let i = 0; i < firstDayOffset; i++) {
+        const day = daysInPrevMonth - firstDayOffset + i + 1
+        cells.push({ day, other: true, key: `prev-${i}`, cls: '_other-month' })
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isSelected = this.selectedDate === d
+        const isToday = d === new Date().getDate() && this.month === new Date().getMonth() && this.year === new Date().getFullYear()
+        const weekday = (firstDayOffset + d - 1) % 7
+        const cls = []
+        if (isSelected) cls.push('_active-day')
+        if (isToday) cls.push('_current')
+        if (weekday === 5 || weekday === 6) cls.push('_weekend')
+        cells.push({ day: d, other: false, key: `day-${d}`, cls: cls.join(' ') })
+      }
+
+      return cells
+    },
+  },
+  async mounted() {
+    try {
+      this.task = await getTask(this.taskId)
+      const parsed = this.parseDateParts(this.task?.date)
+      if (parsed) {
+        this.selectedDate = parsed.day
+        this.month = parsed.month
+        this.year = parsed.year
+      }
+      const index = board.tasks.findIndex((t) => t._id === this.taskId)
+      this.taskNumber = index !== -1 ? index + 1 : 1
+    } catch (err) {
+      this.error = err.message
+      if (err.status === 401) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        window.location.href = import.meta.env.BASE_URL + 'login'
+      }
+    } finally {
+      this.isLoading = false
+    }
+  },
+  methods: {
+    parseDateParts(dateStr) {
+      if (!dateStr) return null
+      const isoMatch = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/)
+      if (isoMatch) {
+        return {
+          day: Number(isoMatch[3]),
+          month: Number(isoMatch[2]) - 1,
+          year: Number(isoMatch[1]),
+        }
+      }
+      const parts = dateStr.split('.')
+      if (parts.length === 3) {
+        return {
+          day: Number(parts[0]),
+          month: Number(parts[1]) - 1,
+          year: Number(parts[2]),
+        }
+      }
+      return null
+    },
+    selectCategory(name) {
+      if (!this.isEditing) return
+      this.task = { ...this.task, topic: name }
+    },
+    selectStatus(status) {
+      if (!this.isEditing) return
+      this.task = { ...this.task, status }
+    },
+    changeMonth(offset) {
+      let newMonth = this.month + offset
+      let newYear = this.year
+      if (newMonth < 0) {
+        newMonth = 11
+        newYear -= 1
+      } else if (newMonth > 11) {
+        newMonth = 0
+        newYear += 1
+      }
+      this.month = newMonth
+      this.year = newYear
+    },
+    selectDay(cell) {
+      if (!this.isEditing || cell.other) return
+      this.selectedDate = cell.day
+      const pad2 = (n) => String(n).padStart(2, '0')
+      this.task = {
+        ...this.task,
+        date: `${this.year}-${pad2(this.month + 1)}-${pad2(cell.day)}T00:00:00.000Z`,
+      }
+    },
+    async handleSave() {
+      if (!this.task?.title) {
+        this.error = 'Введите название задачи'
+        return
+      }
+      try {
+        const updatedTasks = await updateTask(this.taskId, {
+          title: this.task.title,
+          description: this.task.description?.trim() || 'Без описания',
+          topic: this.task.topic,
+          status: this.task.status,
+          date: this.task.date,
+        })
+        if (Array.isArray(updatedTasks)) {
+          board.tasks = updatedTasks
+        } else {
+          const index = board.tasks.findIndex((t) => t._id === this.taskId)
+          if (index !== -1) board.tasks[index] = this.task
+        }
+        this.isEditing = false
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.message
+      }
+    },
+    async handleDelete() {
+      try {
+        const updatedTasks = await deleteTask(this.taskId)
+        if (Array.isArray(updatedTasks)) {
+          board.tasks = updatedTasks
+        } else {
+          board.tasks = board.tasks.filter((t) => t._id !== this.taskId)
+        }
+        this.$router.push('/')
+      } catch (err) {
+        this.error = err.message
+      }
+    },
   },
 }
 </script>
@@ -234,12 +401,7 @@ export default {
   text-align: left;
 }
 
-.pop-browse__content .categories__theme {
-  opacity: 1;
-}
-
 .pop-browse__content .theme-down {
-  display: none;
   margin-bottom: 20px;
 }
 
@@ -303,7 +465,8 @@ export default {
   flex-direction: column;
 }
 
-.form-browse__area {
+.form-browse__area,
+.form-browse__input {
   max-width: 370px;
   width: 100%;
   outline: none;
@@ -315,7 +478,17 @@ export default {
   line-height: 1;
   letter-spacing: -0.14px;
   margin-top: 14px;
+  box-sizing: border-box;
+}
+
+.form-browse__area {
   height: 200px;
+}
+
+.pop-browse__error {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-top: 12px;
 }
 
 .form-browse__area::placeholder {
@@ -355,6 +528,7 @@ export default {
   padding: 11px 14px 10px;
   margin-right: 7px;
   margin-bottom: 7px;
+  cursor: pointer;
 }
 
 .status__theme p {
@@ -535,6 +709,7 @@ export default {
   border-radius: 24px;
   margin-right: 7px;
   opacity: 0.4;
+  cursor: pointer;
 }
 
 .categories__theme p {

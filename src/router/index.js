@@ -20,10 +20,6 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: '',
-        name: 'home',
-      },
-      {
         path: 'card/:id',
         name: 'card',
         component: CardView,

@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import { ref, onMounted, watch, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, computed } from 'vue'
 import { getTasks } from '../services/kanban.js'
+import { board } from '../store/board.js'
 import TaskColumn from './TaskColumn.vue'
 import TaskCard from './TaskCard.vue'
 
@@ -49,9 +49,7 @@ export default {
     TaskCard,
   },
   setup() {
-    const route = useRoute()
     const isLoading = ref(true)
-    const tasksData = ref([])
 
     const getThemeColor = (topic) => {
       const themeMap = {
@@ -80,40 +78,39 @@ export default {
       }))
     }
 
-    const hasTasks = computed(() => tasksData.value.length > 0)
+    const hasTasks = computed(() => board.tasks.length > 0)
 
     const noStatusTasks = computed(() =>
       adaptTasks(
-        tasksData.value.filter((task) => statusMap[task.status] === 'no-status'),
+        board.tasks.filter((task) => statusMap[task.status] === 'no-status'),
       ),
     )
     const todoTasks = computed(() =>
       adaptTasks(
-        tasksData.value.filter((task) => statusMap[task.status] === 'todo'),
+        board.tasks.filter((task) => statusMap[task.status] === 'todo'),
       ),
     )
     const inProgressTasks = computed(() =>
       adaptTasks(
-        tasksData.value.filter(
+        board.tasks.filter(
           (task) => statusMap[task.status] === 'in-progress',
         ),
       ),
     )
     const testingTasks = computed(() =>
       adaptTasks(
-        tasksData.value.filter((task) => statusMap[task.status] === 'testing'),
+        board.tasks.filter((task) => statusMap[task.status] === 'testing'),
       ),
     )
     const doneTasks = computed(() =>
       adaptTasks(
-        tasksData.value.filter((task) => statusMap[task.status] === 'done'),
+        board.tasks.filter((task) => statusMap[task.status] === 'done'),
       ),
     )
 
-    const loadTasks = async (showLoader = true) => {
-      if (showLoader) isLoading.value = true
+    const loadTasks = async () => {
       try {
-        tasksData.value = await getTasks()
+        board.tasks = await getTasks()
       } catch (error) {
         if (error.status === 401) {
           localStorage.removeItem('token')
@@ -125,16 +122,7 @@ export default {
       }
     }
 
-    onMounted(() => loadTasks(true))
-
-    watch(
-      () => route.name,
-      (name) => {
-        if (name === 'home') {
-          loadTasks(false)
-        }
-      },
-    )
+    onMounted(loadTasks)
 
     return {
       isLoading,

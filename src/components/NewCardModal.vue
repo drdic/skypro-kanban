@@ -16,12 +16,12 @@
                 <div class="form-new__block">
                   <label for="formTitle" class="subttl">Название задачи</label>
                   <input
+                    ref="titleInput"
                     class="form-new__input"
                     type="text"
                     name="name"
                     id="formTitle"
                     placeholder="Введите название задачи..."
-                    autofocus
                     v-model="title"
                   />
                 </div>
@@ -124,9 +124,10 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { createTask } from '../services/kanban.js'
+import { board } from '../store/board.js'
 
 export default {
   name: 'NewCardModal',
@@ -135,6 +136,7 @@ export default {
     const title = ref('')
     const description = ref('')
     const error = ref('')
+    const titleInput = ref(null)
     const category = ref('Web Design')
     const categories = [
       { name: 'Web Design', theme: '_orange' },
@@ -229,22 +231,30 @@ export default {
           ? `${year.value}-${pad2(month.value + 1)}-${pad2(selectedDate.value)}T00:00:00.000Z`
           : undefined
 
-        await createTask({
+        const updatedTasks = await createTask({
           title: title.value,
           description: description.value.trim() || 'Без описания',
           topic: category.value,
           date,
         })
+        if (Array.isArray(updatedTasks)) {
+          board.tasks = updatedTasks
+        }
         router.push('/')
       } catch (err) {
         error.value = err.message
       }
     }
 
+    onMounted(() => {
+      titleInput.value?.focus()
+    })
+
     return {
       title,
       description,
       error,
+      titleInput,
       category,
       categories,
       monthLabel,

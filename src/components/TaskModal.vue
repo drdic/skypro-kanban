@@ -167,7 +167,8 @@
 </template>
 
 <script>
-import { getTask, getTasks, updateTask, deleteTask } from '../services/kanban.js'
+import { getTask, updateTask, deleteTask } from '../services/kanban.js'
+import { board } from '../store/board.js'
 
 export default {
   name: 'TaskModal',
@@ -252,8 +253,7 @@ export default {
         this.month = parsed.month
         this.year = parsed.year
       }
-      const allTasks = await getTasks()
-      const index = allTasks.findIndex((t) => t._id === this.taskId)
+      const index = board.tasks.findIndex((t) => t._id === this.taskId)
       this.taskNumber = index !== -1 ? index + 1 : 1
     } catch (err) {
       this.error = err.message
@@ -323,13 +323,19 @@ export default {
         return
       }
       try {
-        await updateTask(this.taskId, {
+        const updatedTasks = await updateTask(this.taskId, {
           title: this.task.title,
           description: this.task.description?.trim() || 'Без описания',
           topic: this.task.topic,
           status: this.task.status,
           date: this.task.date,
         })
+        if (Array.isArray(updatedTasks)) {
+          board.tasks = updatedTasks
+        } else {
+          const index = board.tasks.findIndex((t) => t._id === this.taskId)
+          if (index !== -1) board.tasks[index] = this.task
+        }
         this.isEditing = false
         this.$router.push('/')
       } catch (err) {
@@ -338,7 +344,12 @@ export default {
     },
     async handleDelete() {
       try {
-        await deleteTask(this.taskId)
+        const updatedTasks = await deleteTask(this.taskId)
+        if (Array.isArray(updatedTasks)) {
+          board.tasks = updatedTasks
+        } else {
+          board.tasks = board.tasks.filter((t) => t._id !== this.taskId)
+        }
         this.$router.push('/')
       } catch (err) {
         this.error = err.message

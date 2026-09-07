@@ -16,10 +16,10 @@
           <button class="header__btn-main-new _hover01" id="btnMainNew">
             <router-link to="/add">Создать новую задачу</router-link>
           </button>
-          <a href="#" class="header__user _hover02" @click.prevent="togglePopup">Ivan Ivanov</a>
+          <a href="#" class="header__user _hover02" @click.prevent="togglePopup">{{ userName }}</a>
           <div v-if="isPopupOpen" class="header__pop-user-set pop-user-set">
-            <p class="pop-user-set__name">Ivan Ivanov</p>
-            <p class="pop-user-set__mail">ivan.ivanov@gmail.com</p>
+            <p class="pop-user-set__name">{{ userName }}</p>
+            <p class="pop-user-set__mail">{{ userEmail }}</p>
             <div class="pop-user-set__theme">
               <p>Темная тема</p>
               <input type="checkbox" class="checkbox" name="checkbox" />
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 export default {
   name: 'BaseHeader',
@@ -43,6 +43,10 @@ export default {
     const isPopupOpen = ref(false)
     const headerNav = ref(null)
     const baseUrl = import.meta.env.BASE_URL
+
+    const cachedUser = JSON.parse(localStorage.getItem('user') || 'null')
+    const userName = computed(() => cachedUser?.name || 'Пользователь')
+    const userEmail = computed(() => cachedUser?.login || '')
 
     const togglePopup = () => {
       isPopupOpen.value = !isPopupOpen.value
@@ -70,6 +74,8 @@ export default {
       isPopupOpen,
       headerNav,
       baseUrl,
+      userName,
+      userEmail,
       togglePopup,
       closePopup,
     }

@@ -7,7 +7,6 @@ import AddCardView from '../views/AddCardView.vue'
 import ExitView from '../views/ExitView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 
-// Восстановление исходного пути после редиректа 404.html (SPA на GitHub Pages)
 const redirectQuery = window.location.search
 if (redirectQuery.startsWith('?/')) {
   const restoredPath = redirectQuery.slice(2).replace(/~and~/g, '&')
@@ -20,10 +19,6 @@ const routes = [
     component: HomeView,
     meta: { requiresAuth: true },
     children: [
-      {
-        path: '',
-        name: 'home',
-      },
       {
         path: 'card/:id',
         name: 'card',
@@ -64,9 +59,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated')
+  const token = localStorage.getItem('token')
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.meta.requiresAuth && !token) {
     return { name: 'login' }
   }
 

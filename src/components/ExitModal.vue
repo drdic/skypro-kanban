@@ -31,7 +31,8 @@ export default {
     const router = useRouter()
 
     const handleLogout = () => {
-      localStorage.removeItem('isAuthenticated')
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
       router.push('/login')
     }
 

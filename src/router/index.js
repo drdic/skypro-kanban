@@ -6,6 +6,7 @@ import CardView from '../views/CardView.vue'
 import AddCardView from '../views/AddCardView.vue'
 import ExitView from '../views/ExitView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
+import AppLayout from '../layout/AppLayout.vue'
 
 const redirectQuery = window.location.search
 if (redirectQuery.startsWith('?/')) {
@@ -13,49 +14,53 @@ if (redirectQuery.startsWith('?/')) {
   window.history.replaceState(null, '', import.meta.env.BASE_URL + restoredPath)
 }
 
-const routes = [
-  {
-    path: '/',
-    component: HomeView,
-    meta: { requiresAuth: true },
-    children: [
-      {
-        path: 'card/:id',
-        name: 'card',
-        component: CardView,
-      },
-      {
-        path: 'add',
-        name: 'add',
-        component: AddCardView,
-      },
-      {
-        path: 'exit',
-        name: 'exit',
-        component: ExitView,
-      },
-    ],
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: LoginView,
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: RegisterView,
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'not-found',
-    component: NotFoundView,
-  },
-]
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes,
+  routes: [
+    {
+      path: '',
+      component: AppLayout,
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: HomeView,
+          children: [
+            {
+              path: '/card/add',
+              component: AddCardView,
+            },
+            {
+              path: '/card/:id',
+              component: CardView,
+            },
+            {
+              path: 'exit',
+              component: ExitView,
+            },
+          ],
+          meta: {
+            requiresAuth: true,
+          },
+        },
+        {
+          path: '/login',
+          name: 'login',
+          component: LoginView,
+        },
+        {
+          path: '/register',
+          name: 'register',
+          component: RegisterView,
+        },
+      ],
+    },
+    {
+          path: '/:pathMatch(.*)*',
+          name: 'not-found',
+          component: NotFoundView,
+        },
+  ],
 })
 
 router.beforeEach((to) => {

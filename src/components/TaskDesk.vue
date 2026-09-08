@@ -36,9 +36,8 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
 import { getTasks } from '../services/kanban.js'
-import { board } from '../store/board.js'
 import TaskColumn from './TaskColumn.vue'
 import TaskCard from './TaskCard.vue'
 
@@ -49,6 +48,8 @@ export default {
     TaskCard,
   },
   setup() {
+    const { board } = inject('boardData')
+    const { removeUser } = inject('auth')
     const isLoading = ref(true)
 
     const getThemeColor = (topic) => {
@@ -113,8 +114,7 @@ export default {
         board.tasks = await getTasks()
       } catch (error) {
         if (error.status === 401) {
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
+          removeUser()
           window.location.href = import.meta.env.BASE_URL + 'login'
         }
       } finally {

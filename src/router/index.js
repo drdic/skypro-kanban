@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AppLayout from '../layout/AppLayout.vue'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
@@ -16,35 +17,42 @@ if (redirectQuery.startsWith('?/')) {
 const routes = [
   {
     path: '/',
-    component: HomeView,
-    meta: { requiresAuth: true },
+    component: AppLayout,
     children: [
       {
-        path: 'card/:id',
-        name: 'card',
-        component: CardView,
+        path: '',
+        name: 'home',
+        component: HomeView,
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: 'card/:id',
+            name: 'card',
+            component: CardView,
+          },
+          {
+            path: 'add',
+            name: 'add',
+            component: AddCardView,
+          },
+          {
+            path: 'exit',
+            name: 'exit',
+            component: ExitView,
+          },
+        ],
       },
       {
-        path: 'add',
-        name: 'add',
-        component: AddCardView,
+        path: 'login',
+        name: 'login',
+        component: LoginView,
       },
       {
-        path: 'exit',
-        name: 'exit',
-        component: ExitView,
+        path: 'register',
+        name: 'register',
+        component: RegisterView,
       },
     ],
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: LoginView,
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: RegisterView,
   },
   {
     path: '/:pathMatch(.*)*',

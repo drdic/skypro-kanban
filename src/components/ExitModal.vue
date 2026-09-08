@@ -23,17 +23,18 @@
 </template>
 
 <script>
+import { inject } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default {
   name: 'ExitModal',
   setup() {
+    const { removeUser } = inject('auth')
     const router = useRouter()
 
     const handleLogout = () => {
-      localStorage.removeItem('token')
-      localStorage.removeItem('user')
-      router.push('/login')
+      removeUser()
+      router.push({ name: 'login' })
     }
 
     return {

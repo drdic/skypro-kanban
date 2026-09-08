@@ -168,10 +168,10 @@
 
 <script>
 import { getTask, updateTask, deleteTask } from '../services/kanban.js'
-import { board } from '../store/board.js'
 
 export default {
   name: 'TaskModal',
+  inject: ['boardData', 'auth'],
   props: {
     taskId: {
       type: [String, Number],
@@ -253,14 +253,13 @@ export default {
         this.month = parsed.month
         this.year = parsed.year
       }
-      const index = board.tasks.findIndex((t) => t._id === this.taskId)
+      const index = this.boardData.board.tasks.findIndex((t) => t._id === this.taskId)
       this.taskNumber = index !== -1 ? index + 1 : 1
     } catch (err) {
       this.error = err.message
       if (err.status === 401) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
-        window.location.href = import.meta.env.BASE_URL + 'login'
+        this.auth.removeUser()
+        this.$router.push({ name: 'login' })
       }
     } finally {
       this.isLoading = false
@@ -331,10 +330,10 @@ export default {
           date: this.task.date,
         })
         if (Array.isArray(updatedTasks)) {
-          board.tasks = updatedTasks
+          this.boardData.board.tasks = updatedTasks
         } else {
-          const index = board.tasks.findIndex((t) => t._id === this.taskId)
-          if (index !== -1) board.tasks[index] = this.task
+          const index = this.boardData.board.tasks.findIndex((t) => t._id === this.taskId)
+          if (index !== -1) this.boardData.board.tasks[index] = this.task
         }
         this.isEditing = false
         this.$router.push('/')
@@ -346,9 +345,9 @@ export default {
       try {
         const updatedTasks = await deleteTask(this.taskId)
         if (Array.isArray(updatedTasks)) {
-          board.tasks = updatedTasks
+          this.boardData.board.tasks = updatedTasks
         } else {
-          board.tasks = board.tasks.filter((t) => t._id !== this.taskId)
+          this.boardData.board.tasks = this.boardData.board.tasks.filter((t) => t._id !== this.taskId)
         }
         this.$router.push('/')
       } catch (err) {

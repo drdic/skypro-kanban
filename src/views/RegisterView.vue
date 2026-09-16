@@ -49,6 +49,7 @@ import { useRouter } from 'vue-router'
 import { signUp } from '../services/auth.js'
 
 const { setUser } = inject('auth')
+const { showToast } = inject('notifications')
 const name = ref('')
 const email = ref('')
 const password = ref('')
@@ -72,9 +73,11 @@ const register = async () => {
       password: password.value,
     })
     setUser(user)
+    showToast('Регистрация прошла успешно')
     router.push('/')
   } catch (err) {
     error.value = err.message
+    showToast(err.message, 'error')
   } finally {
     isLoading.value = false
   }

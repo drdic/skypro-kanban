@@ -192,7 +192,7 @@ import { getTask, updateTask, deleteTask } from '../services/kanban.js'
 
 export default {
   name: 'TaskModal',
-  inject: ['boardData', 'auth'],
+  inject: ['boardData', 'auth', 'notifications'],
   props: {
     taskId: {
       type: [String, Number],
@@ -367,14 +367,17 @@ export default {
           if (index !== -1) this.boardData.board.tasks[index] = this.task
         }
         this.isEditing = false
+        this.notifications.showToast('Задача обновлена')
         this.$router.push('/')
       } catch (err) {
         if (err.status === 401) {
           this.auth.removeUser()
+          this.notifications.showToast('Сессия истекла, войдите снова', 'error')
           this.$router.push({ name: 'login' })
           return
         }
         this.error = err.message
+        this.notifications.showToast(err.message, 'error')
       } finally {
         this.isProcessing = false
       }
@@ -392,14 +395,17 @@ export default {
             (t) => t._id !== this.taskId,
           )
         }
+        this.notifications.showToast('Задача удалена')
         this.$router.push('/')
       } catch (err) {
         if (err.status === 401) {
           this.auth.removeUser()
+          this.notifications.showToast('Сессия истекла, войдите снова', 'error')
           this.$router.push({ name: 'login' })
           return
         }
         this.error = err.message
+        this.notifications.showToast(err.message, 'error')
       } finally {
         this.isProcessing = false
       }

@@ -62,6 +62,7 @@ export default {
   setup() {
     const { board } = inject('boardData')
     const { removeUser } = inject('auth')
+    const { showToast } = inject('notifications')
     const router = useRouter()
     const isLoading = ref(true)
     const error = ref('')
@@ -119,10 +120,12 @@ export default {
       } catch (err) {
         if (err.status === 401) {
           removeUser()
+          showToast('Сессия истекла, войдите снова', 'error')
           router.push({ name: 'login' })
           return
         }
         error.value = err.message
+        showToast(err.message, 'error')
       } finally {
         isLoading.value = false
       }

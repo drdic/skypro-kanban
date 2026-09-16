@@ -140,6 +140,7 @@ export default {
   name: 'NewCardModal',
   setup() {
     const { board } = inject('boardData')
+    const { showToast } = inject('notifications')
     const router = useRouter()
     const title = ref('')
     const description = ref('')
@@ -253,9 +254,11 @@ export default {
         if (Array.isArray(updatedTasks)) {
           board.tasks = updatedTasks
         }
+        showToast('Задача создана')
         router.push('/')
       } catch (err) {
         error.value = err.message
+        showToast(err.message, 'error')
       } finally {
         isSubmitting.value = false
       }

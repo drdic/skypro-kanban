@@ -72,7 +72,7 @@ export default {
     const router = useRouter()
     const isLoading = ref(true)
     const error = ref('')
-    const skeletonColumns = [4, 3, 3, 1, 1]
+    const skeletonColumns = [2, 2, 1, 1, 1]
 
     const getThemeColor = (topic) => {
       const themeMap = {

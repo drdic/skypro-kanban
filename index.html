@@ -5,6 +5,26 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <script>
+      // Применяем сохранённую тему синхронно до первой отрисовки,
+      // чтобы избежать вспышки светлой темы при обновлении страницы.
+      (function () {
+        try {
+          var stored = localStorage.getItem('vueuse-color-scheme')
+          var isDark =
+            stored === 'dark' ||
+            (stored !== 'light' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          if (isDark) {
+            document.documentElement.classList.add('dark')
+          }
+          document.documentElement.style.backgroundColor = isDark ? '#151419' : '#f1f1f1'
+        } catch (e) {
+          /* игнорируем недоступность localStorage */
+        }
+      })()
+    </script>
+
     <title>Skypro Kanban</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

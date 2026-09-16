@@ -22,7 +22,7 @@
             <p class="pop-user-set__mail">{{ userEmail }}</p>
             <div class="pop-user-set__theme">
               <p>Темная тема</p>
-              <input type="checkbox" class="checkbox" name="checkbox" />
+              <input type="checkbox" class="checkbox" name="checkbox" v-model="isDark" />
             </div>
             <button type="button" class="_hover03" @click="closePopup">
               <router-link to="/exit" @click="closePopup">Выйти</router-link>
@@ -35,7 +35,8 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onBeforeUnmount, inject } from 'vue'
+import { ref, computed, inject } from 'vue'
+import { useDark, onClickOutside, onKeyStroke } from '@vueuse/core'
 
 export default {
   name: 'BaseHeader',
@@ -44,6 +45,8 @@ export default {
     const isPopupOpen = ref(false)
     const headerNav = ref(null)
     const baseUrl = import.meta.env.BASE_URL
+
+    const isDark = useDark()
 
     const userName = computed(() => user.value?.name || 'Пользователь')
     const userEmail = computed(() => user.value?.login || '')
@@ -56,24 +59,14 @@ export default {
       isPopupOpen.value = false
     }
 
-    const handleClickOutside = (event) => {
-      if (headerNav.value && !headerNav.value.contains(event.target)) {
-        closePopup()
-      }
-    }
-
-    onMounted(() => {
-      document.addEventListener('click', handleClickOutside)
-    })
-
-    onBeforeUnmount(() => {
-      document.removeEventListener('click', handleClickOutside)
-    })
+    onClickOutside(headerNav, closePopup)
+    onKeyStroke('Escape', closePopup)
 
     return {
       isPopupOpen,
       headerNav,
       baseUrl,
+      isDark,
       userName,
       userEmail,
       togglePopup,

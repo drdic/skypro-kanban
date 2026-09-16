@@ -35,18 +35,18 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, inject } from 'vue'
 
 export default {
   name: 'BaseHeader',
   setup() {
+    const { user } = inject('auth')
     const isPopupOpen = ref(false)
     const headerNav = ref(null)
     const baseUrl = import.meta.env.BASE_URL
 
-    const cachedUser = JSON.parse(localStorage.getItem('user') || 'null')
-    const userName = computed(() => cachedUser?.name || 'Пользователь')
-    const userEmail = computed(() => cachedUser?.login || '')
+    const userName = computed(() => user.value?.name || 'Пользователь')
+    const userEmail = computed(() => user.value?.login || '')
 
     const togglePopup = () => {
       isPopupOpen.value = !isPopupOpen.value

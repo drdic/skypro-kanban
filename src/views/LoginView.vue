@@ -36,10 +36,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { signIn } from '../services/auth.js'
 
+const { setUser } = inject('auth')
 const loginInput = ref('')
 const password = ref('')
 const isLoading = ref(false)
@@ -60,8 +61,7 @@ const login = async () => {
       login: loginInput.value,
       password: password.value,
     })
-    localStorage.setItem('token', user.token)
-    localStorage.setItem('user', JSON.stringify(user))
+    setUser(user)
     router.push('/')
   } catch (err) {
     error.value = err.message

@@ -95,7 +95,8 @@
                   <div class="calendar__period">
                     <p class="calendar__p date-end">
                       Выберите срок исполнения
-                      <span class="date-control">{{ selectedDateLabel }}</span>.
+                      <span class="date-control">{{ selectedDateLabel }}</span
+                      >.
                     </p>
                   </div>
                 </div>
@@ -115,7 +116,14 @@
                 </div>
               </div>
             </div>
-            <button class="form-new__create _hover01" id="btnCreate" @click="handleSubmit">Создать задачу</button>
+            <button
+              class="form-new__create _hover01"
+              id="btnCreate"
+              :disabled="isSubmitting"
+              @click="handleSubmit"
+            >
+              {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
+            </button>
           </div>
         </div>
       </div>
@@ -136,6 +144,7 @@ export default {
     const title = ref('')
     const description = ref('')
     const error = ref('')
+    const isSubmitting = ref(false)
     const titleInput = ref(null)
     const category = ref('Web Design')
     const categories = [
@@ -180,9 +189,7 @@ export default {
       for (let d = 1; d <= daysInMonth; d++) {
         const isSelected = selectedDate.value === d
         const isToday =
-          d === now.getDate() &&
-          month.value === now.getMonth() &&
-          year.value === now.getFullYear()
+          d === now.getDate() && month.value === now.getMonth() && year.value === now.getFullYear()
         const weekday = (firstDayOffset + d - 1) % 7
         const cls = ['_cell-day']
         if (isSelected) cls.push('_active-day')
@@ -224,7 +231,13 @@ export default {
         return
       }
 
+      if (title.value.trim().length < 2) {
+        error.value = 'Название задачи должно содержать минимум 2 символа'
+        return
+      }
+
       error.value = ''
+      isSubmitting.value = true
       try {
         const pad2 = (n) => String(n).padStart(2, '0')
         const date = selectedDate.value
@@ -232,7 +245,7 @@ export default {
           : undefined
 
         const updatedTasks = await createTask({
-          title: title.value,
+          title: title.value.trim(),
           description: description.value.trim() || 'Без описания',
           topic: category.value,
           date,
@@ -243,6 +256,8 @@ export default {
         router.push('/')
       } catch (err) {
         error.value = err.message
+      } finally {
+        isSubmitting.value = false
       }
     }
 
@@ -254,6 +269,7 @@ export default {
       title,
       description,
       error,
+      isSubmitting,
       titleInput,
       category,
       categories,
@@ -398,6 +414,11 @@ export default {
   line-height: 1;
   color: var(--color-text-white);
   float: right;
+}
+
+.form-new__create:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .subttl {

@@ -6,8 +6,19 @@
         <p>Данные загружаются</p>
       </div>
 
+      <div v-else-if="error" class="error-state">
+        <p class="error-state__text">{{ error }}</p>
+        <button class="error-state__retry _hover01" @click="loadTasks">
+          Попробовать снова
+        </button>
+      </div>
+
       <div v-else-if="!hasTasks" class="empty-state">
-        <p>Задач нет</p>
+        <p class="empty-state__title">Новых задач нет</p>
+        <p class="empty-state__hint">Создайте первую задачу, чтобы начать работу</p>
+        <router-link to="/add" class="empty-state__link _hover01">
+          Создать задачу
+        </router-link>
       </div>
 
       <div v-else class="main__content">
@@ -37,6 +48,7 @@
 
 <script>
 import { ref, onMounted, computed, inject } from 'vue'
+import { useRouter } from 'vue-router'
 import { getTasks } from '../services/kanban.js'
 import TaskColumn from './TaskColumn.vue'
 import TaskCard from './TaskCard.vue'
@@ -50,7 +62,9 @@ export default {
   setup() {
     const { board } = inject('boardData')
     const { removeUser } = inject('auth')
+    const router = useRouter()
     const isLoading = ref(true)
+    const error = ref('')
 
     const getThemeColor = (topic) => {
       const themeMap = {
@@ -65,8 +79,8 @@ export default {
       'Без статуса': 'no-status',
       'Нужно сделать': 'todo',
       'В работе': 'in-progress',
-      'Тестирование': 'testing',
-      'Готово': 'done',
+      Тестирование: 'testing',
+      Готово: 'done',
     }
 
     const adaptTasks = (taskList) => {
@@ -82,41 +96,33 @@ export default {
     const hasTasks = computed(() => board.tasks.length > 0)
 
     const noStatusTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'no-status'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'no-status')),
     )
     const todoTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'todo'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'todo')),
     )
     const inProgressTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter(
-          (task) => statusMap[task.status] === 'in-progress',
-        ),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'in-progress')),
     )
     const testingTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'testing'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'testing')),
     )
     const doneTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'done'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'done')),
     )
 
     const loadTasks = async () => {
+      isLoading.value = true
+      error.value = ''
       try {
         board.tasks = await getTasks()
-      } catch (error) {
-        if (error.status === 401) {
+      } catch (err) {
+        if (err.status === 401) {
           removeUser()
-          window.location.href = import.meta.env.BASE_URL + 'login'
+          router.push({ name: 'login' })
+          return
         }
+        error.value = err.message
       } finally {
         isLoading.value = false
       }
@@ -126,6 +132,8 @@ export default {
 
     return {
       isLoading,
+      error,
+      loadTasks,
       hasTasks,
       noStatusTasks,
       todoTasks,
@@ -154,7 +162,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 24px;
   min-height: 300px;
   font-size: 18px;
   font-weight: 500;
@@ -166,12 +174,30 @@ export default {
 }
 
 .loader {
-  width: 48px;
-  height: 48px;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.loader::before,
+.loader::after {
+  content: '';
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  border: 4px solid var(--color-border-light);
+  border: 3px solid transparent;
+}
+
+.loader::before {
   border-top-color: var(--color-accent);
-  animation: loader-spin 0.9s linear infinite;
+  border-right-color: var(--color-accent);
+  animation: loader-spin 1s linear infinite;
+}
+
+.loader::after {
+  border-bottom-color: var(--color-text-secondary);
+  border-left-color: var(--color-text-secondary);
+  animation: loader-spin 1.6s linear infinite reverse;
 }
 
 @keyframes loader-spin {
@@ -195,12 +221,63 @@ export default {
 
 .empty-state {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   min-height: 300px;
-  font-size: 18px;
-  font-weight: 500;
+  text-align: center;
+}
+
+.empty-state__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.empty-state__hint {
+  font-size: 14px;
   color: var(--color-text-secondary);
+}
+
+.empty-state__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 20px;
+  margin-top: 8px;
+  border-radius: 4px;
+  background-color: var(--color-accent);
+  color: var(--color-text-white);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 300px;
+  text-align: center;
+}
+
+.error-state__text {
+  font-size: 16px;
+  color: #e53e3e;
+}
+
+.error-state__retry {
+  height: 30px;
+  padding: 0 20px;
+  border: 0.7px solid var(--color-accent);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 @media screen and (max-width: 1200px) {

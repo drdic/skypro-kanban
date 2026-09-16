@@ -3,20 +3,18 @@
     <div class="not-found-view__container">
       <div class="not-found-view__content">
         <div class="error-image">
-          <img :src="errorImage" alt="404 - Страница не найдена" class="error-img">
+          <img :src="errorImage" alt="404 - Страница не найдена" class="error-img" />
         </div>
 
         <h1 class="error-title">Страница не найдена</h1>
 
         <p class="error-description">
-          Запрашиваемая страница не существует или была перемещена.
-          Проверьте правильность URL или вернитесь на главную.
+          Запрашиваемая страница не существует или была перемещена. Проверьте правильность URL или
+          вернитесь на главную.
         </p>
 
         <div class="error-actions">
-          <router-link to="/" class="btn btn-primary">
-            Вернуться на главную
-          </router-link>
+          <router-link to="/" class="btn btn-primary"> Вернуться на главную </router-link>
           <button class="btn btn-secondary" @click="goBack">Вернуться назад</button>
         </div>
       </div>

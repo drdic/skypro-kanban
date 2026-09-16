@@ -3,7 +3,11 @@
     <div class="pop-browse" id="popBrowse">
       <div class="pop-browse__container">
         <div class="pop-browse__block">
-          <div class="pop-browse__content">
+          <div v-if="isLoading" class="pop-browse__loading">
+            <div class="loader"></div>
+            <p>Загрузка задачи...</p>
+          </div>
+          <div v-else class="pop-browse__content">
             <div class="pop-browse__top-block">
               <h3 class="pop-browse__ttl">Задача №{{ taskNumber }}</h3>
               <div class="categories__theme theme-top _orange _active-category">
@@ -134,8 +138,12 @@
                 <button class="btn-browse__edit _btn-bor _hover03" @click="isEditing = true">
                   Редактировать задачу
                 </button>
-                <button class="btn-browse__delete _btn-bor _hover03" @click="handleDelete">
-                  Удалить задачу
+                <button
+                  class="btn-browse__delete _btn-bor _hover03"
+                  :disabled="isProcessing"
+                  @click="handleDelete"
+                >
+                  {{ isProcessing ? 'Удаление...' : 'Удалить задачу' }}
                 </button>
               </div>
               <button class="btn-browse__close _btn-bg _hover01">
@@ -144,13 +152,26 @@
             </div>
             <div class="pop-browse__btn-edit" :class="{ _hide: !isEditing }">
               <div class="btn-group">
-                <button class="btn-edit__edit _btn-bg _hover01" @click="handleSave">
-                  Сохранить
+                <button
+                  class="btn-edit__edit _btn-bg _hover01"
+                  :disabled="isProcessing"
+                  @click="handleSave"
+                >
+                  {{ isProcessing ? 'Сохранение...' : 'Сохранить' }}
                 </button>
-                <button class="btn-edit__edit _btn-bor _hover03" @click="isEditing = false">
+                <button
+                  class="btn-edit__edit _btn-bor _hover03"
+                  :disabled="isProcessing"
+                  @click="isEditing = false"
+                >
                   Отменить
                 </button>
-                <button class="btn-edit__delete _btn-bor _hover03" id="btnDelete" @click="handleDelete">
+                <button
+                  class="btn-edit__delete _btn-bor _hover03"
+                  id="btnDelete"
+                  :disabled="isProcessing"
+                  @click="handleDelete"
+                >
                   Удалить задачу
                 </button>
               </div>
@@ -182,6 +203,7 @@ export default {
     return {
       isEditing: false,
       isLoading: true,
+      isProcessing: false,
       task: {},
       error: '',
       statuses: ['Без статуса', 'Нужно сделать', 'В работе', 'Тестирование', 'Готово'],
@@ -232,7 +254,10 @@ export default {
 
       for (let d = 1; d <= daysInMonth; d++) {
         const isSelected = this.selectedDate === d
-        const isToday = d === new Date().getDate() && this.month === new Date().getMonth() && this.year === new Date().getFullYear()
+        const isToday =
+          d === new Date().getDate() &&
+          this.month === new Date().getMonth() &&
+          this.year === new Date().getFullYear()
         const weekday = (firstDayOffset + d - 1) % 7
         const cls = []
         if (isSelected) cls.push('_active-day')
@@ -317,13 +342,19 @@ export default {
       }
     },
     async handleSave() {
-      if (!this.task?.title) {
+      if (!this.task?.title?.trim()) {
         this.error = 'Введите название задачи'
         return
       }
+      if (this.task.title.trim().length < 2) {
+        this.error = 'Название задачи должно содержать минимум 2 символа'
+        return
+      }
+      this.error = ''
+      this.isProcessing = true
       try {
         const updatedTasks = await updateTask(this.taskId, {
-          title: this.task.title,
+          title: this.task.title.trim(),
           description: this.task.description?.trim() || 'Без описания',
           topic: this.task.topic,
           status: this.task.status,
@@ -338,20 +369,39 @@ export default {
         this.isEditing = false
         this.$router.push('/')
       } catch (err) {
+        if (err.status === 401) {
+          this.auth.removeUser()
+          this.$router.push({ name: 'login' })
+          return
+        }
         this.error = err.message
+      } finally {
+        this.isProcessing = false
       }
     },
     async handleDelete() {
+      if (this.isProcessing) return
+      this.error = ''
+      this.isProcessing = true
       try {
         const updatedTasks = await deleteTask(this.taskId)
         if (Array.isArray(updatedTasks)) {
           this.boardData.board.tasks = updatedTasks
         } else {
-          this.boardData.board.tasks = this.boardData.board.tasks.filter((t) => t._id !== this.taskId)
+          this.boardData.board.tasks = this.boardData.board.tasks.filter(
+            (t) => t._id !== this.taskId,
+          )
         }
         this.$router.push('/')
       } catch (err) {
+        if (err.status === 401) {
+          this.auth.removeUser()
+          this.$router.push({ name: 'login' })
+          return
+        }
         this.error = err.message
+      } finally {
+        this.isProcessing = false
       }
     },
   },
@@ -398,6 +448,60 @@ export default {
 .pop-browse__content {
   display: block;
   text-align: left;
+}
+
+.pop-browse__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 200px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.pop-browse__loading .loader {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.pop-browse__loading .loader::before,
+.pop-browse__loading .loader::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+}
+
+.pop-browse__loading .loader::before {
+  border-top-color: var(--color-accent);
+  border-right-color: var(--color-accent);
+  animation: loader-spin 1s linear infinite;
+}
+
+.pop-browse__loading .loader::after {
+  border-bottom-color: var(--color-text-secondary);
+  border-left-color: var(--color-text-secondary);
+  animation: loader-spin 1.6s linear infinite reverse;
+}
+
+@keyframes loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pop-browse__btn-browse button:disabled,
+.pop-browse__btn-edit button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .pop-browse__content .theme-down {

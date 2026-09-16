@@ -11,7 +11,7 @@
             id="email-input"
             name="email"
             required
-          >
+          />
         </div>
         <div class="form-group">
           <input
@@ -21,16 +21,14 @@
             id="password-input"
             name="password"
             required
-          >
+          />
         </div>
         <p v-if="error" class="login-error">{{ error }}</p>
         <button type="submit" class="login-button" :disabled="isLoading">
           {{ isLoading ? 'Вход...' : 'Войти' }}
         </button>
       </form>
-      <router-link to="/register" class="register-link">
-        Регистрация
-      </router-link>
+      <router-link to="/register" class="register-link"> Регистрация </router-link>
     </div>
   </div>
 </template>

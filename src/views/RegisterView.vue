@@ -11,7 +11,7 @@
             id="name-input"
             name="name"
             required
-          >
+          />
         </div>
         <div class="form-group">
           <input
@@ -21,7 +21,7 @@
             id="email-input"
             name="email"
             required
-          >
+          />
         </div>
         <div class="form-group">
           <input
@@ -31,16 +31,14 @@
             id="password-input"
             name="password"
             required
-          >
+          />
         </div>
         <p v-if="error" class="register-error">{{ error }}</p>
         <button type="submit" class="register-button" :disabled="isLoading">
           {{ isLoading ? 'Регистрация...' : 'Зарегистрироваться' }}
         </button>
       </form>
-      <router-link to="/login" class="login-link">
-        Уже есть аккаунт? Войдите
-      </router-link>
+      <router-link to="/login" class="login-link"> Уже есть аккаунт? Войдите </router-link>
     </div>
   </div>
 </template>
@@ -61,11 +59,7 @@ const router = useRouter()
 const register = async () => {
   error.value = ''
 
-  if (
-    !name.value.trim() ||
-    !email.value.trim() ||
-    !password.value.trim()
-  ) {
+  if (!name.value.trim() || !email.value.trim() || !password.value.trim()) {
     error.value = 'Пожалуйста, заполните все обязательные поля'
     return
   }

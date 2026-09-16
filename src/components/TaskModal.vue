@@ -10,8 +10,8 @@
           <div v-else class="pop-browse__content">
             <div class="pop-browse__top-block">
               <h3 class="pop-browse__ttl">Задача №{{ taskNumber }}</h3>
-              <div class="categories__theme theme-top _orange _active-category">
-                <p class="_orange">{{ task?.topic || 'Без категории' }}</p>
+              <div class="categories__theme theme-top _active-category" :class="categoryTheme">
+                <p :class="categoryTheme">{{ task?.topic || 'Без категории' }}</p>
               </div>
             </div>
             <div class="pop-browse__status status">
@@ -219,6 +219,14 @@ export default {
     }
   },
   computed: {
+    categoryTheme() {
+      const map = {
+        'Web Design': '_orange',
+        Research: '_green',
+        Copywriting: '_purple',
+      }
+      return map[this.task?.topic] || '_orange'
+    },
     formattedDate() {
       const parsed = this.parseDateParts(this.task?.date)
       if (!parsed) return '—'

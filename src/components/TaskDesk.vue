@@ -4,10 +4,12 @@
       <div v-if="isLoading" class="skeleton" aria-label="Загрузка" aria-busy="true">
         <div v-for="(count, index) in skeletonColumns" :key="index" class="skeleton__column">
           <div class="skeleton__title"></div>
-          <div v-for="card in count" :key="card" class="skeleton__card">
-            <div class="skeleton__badge"></div>
-            <div class="skeleton__line"></div>
-            <div class="skeleton__line skeleton__line_short"></div>
+          <div v-for="card in count" :key="card" class="skeleton__item">
+            <div class="skeleton__card">
+              <div class="skeleton__badge"></div>
+              <div class="skeleton__line"></div>
+              <div class="skeleton__line skeleton__line_short"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -72,7 +74,25 @@ export default {
     const router = useRouter()
     const isLoading = ref(true)
     const error = ref('')
-    const skeletonColumns = [2, 2, 1, 1, 1]
+
+    const SKELETON_KEY = 'kanban-skeleton-columns'
+    const DEFAULT_SKELETON = [1, 1, 1, 1, 1]
+
+    const readSkeletonCounts = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem(SKELETON_KEY) || 'null')
+        if (Array.isArray(stored) && stored.length === 5 && stored.some((count) => count > 0)) {
+          return stored
+        }
+      } catch {
+        /* игнорируем недоступность localStorage */
+      }
+      return DEFAULT_SKELETON
+    }
+
+    // Заглушки повторяют последнюю раскладку доски,
+    // чтобы при загрузке не было резкого скачка количества карточек.
+    const skeletonColumns = ref(readSkeletonCounts())
 
     const getThemeColor = (topic) => {
       const themeMap = {
@@ -89,6 +109,20 @@ export default {
       'В работе': 'in-progress',
       Тестирование: 'testing',
       Готово: 'done',
+    }
+
+    const skeletonOrder = ['no-status', 'todo', 'in-progress', 'testing', 'done']
+
+    const saveSkeletonCounts = (taskList) => {
+      const counts = skeletonOrder.map(
+        (status) => taskList.filter((task) => statusMap[task.status] === status).length,
+      )
+      if (!counts.some((count) => count > 0)) return
+      try {
+        localStorage.setItem(SKELETON_KEY, JSON.stringify(counts))
+      } catch {
+        /* игнорируем недоступность localStorage */
+      }
     }
 
     const adaptTasks = (taskList) => {
@@ -124,6 +158,7 @@ export default {
       error.value = ''
       try {
         board.tasks = await getTasks()
+        saveSkeletonCounts(board.tasks)
       } catch (err) {
         if (err.status === 401) {
           removeUser()
@@ -172,14 +207,15 @@ export default {
   width: 100%;
   display: flex;
   gap: 0;
-  padding: 15px 0 49px;
+  padding: 25px 0 49px;
 }
 
 .skeleton__column {
   width: 20%;
-  padding: 0 5px;
+  margin: 0 auto;
 }
 
+/* Геометрия заглушек совпадает с реальными колонками и карточками */
 .skeleton__title {
   width: 84px;
   height: 14px;
@@ -189,13 +225,16 @@ export default {
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 
+.skeleton__item {
+  padding: 5px;
+  box-sizing: border-box;
+}
+
 .skeleton__card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
   width: 220px;
   height: 130px;
-  margin: 5px;
   padding: 15px 13px 19px;
   border-radius: 10px;
   background-color: var(--color-bg-white);
@@ -204,22 +243,24 @@ export default {
 
 .skeleton__badge {
   width: 60px;
-  height: 18px;
+  height: 20px;
+  margin-bottom: 12px;
   border-radius: 18px;
   background-color: var(--color-border);
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 
 .skeleton__line {
-  width: 160px;
-  height: 12px;
+  width: 100%;
+  height: 18px;
+  margin-bottom: 10px;
   border-radius: 4px;
   background-color: var(--color-border);
   animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 
 .skeleton__line_short {
-  width: 48px;
+  width: 40px;
 }
 
 @keyframes skeleton-pulse {
@@ -318,8 +359,9 @@ export default {
     display: none;
   }
 
-  .skeleton__card {
+  .skeleton__item {
     flex-shrink: 0;
+    width: 230px;
   }
 }
 </style>

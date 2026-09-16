@@ -27,7 +27,7 @@
 
 .dark {
   --color-bg: #151419;
-  --color-bg-content: #20202c;
+  --color-bg-content: #151419;
   --color-bg-white: #20202c;
 
   --color-text-primary: #ffffff;
@@ -43,11 +43,11 @@
   --color-accent: #565eef;
   --color-accent-hover: #33399b;
 
-  --color-orange-bg: #4a3000;
-  --color-orange-text: #ffb74d;
-  --color-green-bg: #1c3a2b;
-  --color-green-text: #4ade80;
-  --color-purple-bg: #2f1f45;
-  --color-purple-text: #c084fc;
+  --color-orange-bg: #ffe4c2;
+  --color-orange-text: #ff6d00;
+  --color-green-bg: #b4fdd1;
+  --color-green-text: #06b16e;
+  --color-purple-bg: #e9d4ff;
+  --color-purple-text: #9a48f1;
   --color-gray-bg: #4e5566;
 }

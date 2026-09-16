@@ -596,6 +596,14 @@ export default {
   letter-spacing: -0.14px;
   margin-top: 14px;
   box-sizing: border-box;
+  color: var(--color-text-primary);
+}
+
+.form-browse__input::placeholder {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  letter-spacing: -0.14px;
 }
 
 .form-browse__area {

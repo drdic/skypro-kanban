@@ -1,9 +1,15 @@
 <template>
   <div class="container">
     <div class="main__block">
-      <div v-if="isLoading" class="loading-state">
-        <div class="loader" aria-label="Загрузка"></div>
-        <p>Данные загружаются</p>
+      <div v-if="isLoading" class="skeleton" aria-label="Загрузка" aria-busy="true">
+        <div v-for="(count, index) in skeletonColumns" :key="index" class="skeleton__column">
+          <div class="skeleton__title"></div>
+          <div v-for="card in count" :key="card" class="skeleton__card">
+            <div class="skeleton__badge"></div>
+            <div class="skeleton__line"></div>
+            <div class="skeleton__line skeleton__line_short"></div>
+          </div>
+        </div>
       </div>
 
       <div v-else-if="error" class="error-state">
@@ -66,6 +72,7 @@ export default {
     const router = useRouter()
     const isLoading = ref(true)
     const error = ref('')
+    const skeletonColumns = [4, 3, 3, 1, 1]
 
     const getThemeColor = (topic) => {
       const themeMap = {
@@ -136,6 +143,7 @@ export default {
     return {
       isLoading,
       error,
+      skeletonColumns,
       loadTasks,
       hasTasks,
       noStatusTasks,
@@ -160,65 +168,67 @@ export default {
   display: flex;
 }
 
-.loading-state {
+.skeleton {
+  width: 100%;
+  display: flex;
+  gap: 0;
+  padding: 15px 0 49px;
+}
+
+.skeleton__column {
+  width: 20%;
+  padding: 0 5px;
+}
+
+.skeleton__title {
+  width: 84px;
+  height: 14px;
+  margin: 15px 10px;
+  border-radius: 4px;
+  background-color: var(--color-border);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton__card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  min-height: 300px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
+  gap: 14px;
+  width: 220px;
+  height: 130px;
+  margin: 5px;
+  padding: 15px 13px 19px;
+  border-radius: 10px;
+  background-color: var(--color-bg-white);
+  box-sizing: border-box;
 }
 
-.loading-state p {
-  animation: loader-text-pulse 1.6s ease-in-out infinite;
+.skeleton__badge {
+  width: 60px;
+  height: 18px;
+  border-radius: 18px;
+  background-color: var(--color-border);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 
-.loader {
-  position: relative;
-  width: 64px;
-  height: 64px;
+.skeleton__line {
+  width: 160px;
+  height: 12px;
+  border-radius: 4px;
+  background-color: var(--color-border);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
 }
 
-.loader::before,
-.loader::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 3px solid transparent;
+.skeleton__line_short {
+  width: 48px;
 }
 
-.loader::before {
-  border-top-color: var(--color-accent);
-  border-right-color: var(--color-accent);
-  animation: loader-spin 1s linear infinite;
-}
-
-.loader::after {
-  border-bottom-color: var(--color-text-secondary);
-  border-left-color: var(--color-text-secondary);
-  animation: loader-spin 1.6s linear infinite reverse;
-}
-
-@keyframes loader-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes loader-text-pulse {
+@keyframes skeleton-pulse {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.45;
+    opacity: 0.35;
   }
 }
 
@@ -292,6 +302,24 @@ export default {
 
   .main__content {
     display: block;
+  }
+
+  .skeleton {
+    flex-direction: column;
+  }
+
+  .skeleton__column {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .skeleton__title {
+    display: none;
+  }
+
+  .skeleton__card {
+    flex-shrink: 0;
   }
 }
 </style>

@@ -109,6 +109,10 @@ body {
   display: block;
 }
 
+.dark .header {
+  background-color: var(--color-bg);
+}
+
 .wrapper {
   max-width: 100%;
   width: 100vw;

@@ -378,6 +378,7 @@ export default {
   font-size: 14px;
   line-height: 1;
   letter-spacing: -0.14px;
+  color: var(--color-text-primary);
 }
 
 .form-new__input::placeholder,

@@ -85,13 +85,11 @@ export default {
           return stored
         }
       } catch {
-        /* игнорируем недоступность localStorage */
+        return DEFAULT_SKELETON
       }
       return DEFAULT_SKELETON
     }
 
-    // Заглушки повторяют последнюю раскладку доски,
-    // чтобы при загрузке не было резкого скачка количества карточек.
     const skeletonColumns = ref(readSkeletonCounts())
 
     const getThemeColor = (topic) => {
@@ -121,7 +119,7 @@ export default {
       try {
         localStorage.setItem(SKELETON_KEY, JSON.stringify(counts))
       } catch {
-        /* игнорируем недоступность localStorage */
+        return
       }
     }
 
@@ -215,7 +213,6 @@ export default {
   margin: 0 auto;
 }
 
-/* Геометрия заглушек совпадает с реальными колонками и карточками */
 .skeleton__title {
   width: 84px;
   height: 14px;

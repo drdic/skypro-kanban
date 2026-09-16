@@ -10,7 +10,7 @@
               <form
                 class="pop-new-card__form form-new"
                 id="formNewCard"
-                action="#"
+                autocomplete="off"
                 @submit.prevent="handleSubmit"
               >
                 <div class="form-new__block">
@@ -19,9 +19,13 @@
                     ref="titleInput"
                     class="form-new__input"
                     type="text"
-                    name="name"
+                    name="title"
                     id="formTitle"
                     placeholder="Введите название задачи..."
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-bwignore
                     v-model="title"
                   />
                 </div>
@@ -32,6 +36,10 @@
                     name="text"
                     id="textArea"
                     placeholder="Введите описание задачи..."
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-bwignore
                     v-model="description"
                   ></textarea>
                 </div>

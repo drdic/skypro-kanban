@@ -2,7 +2,7 @@
   <div class="register-container">
     <div class="register-card">
       <h2 class="register-title">Регистрация</h2>
-      <form @submit.prevent="register" class="register-form">
+      <form @submit.prevent="register" class="register-form" autocomplete="on">
         <div class="form-group">
           <input
             type="text"
@@ -10,16 +10,18 @@
             v-model="name"
             id="name-input"
             name="name"
+            autocomplete="name"
             required
           />
         </div>
         <div class="form-group">
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Эл. почта"
             v-model="email"
             id="email-input"
             name="email"
+            autocomplete="username"
             required
           />
         </div>
@@ -30,6 +32,7 @@
             v-model="password"
             id="password-input"
             name="password"
+            autocomplete="new-password"
             required
           />
         </div>

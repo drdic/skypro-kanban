@@ -2,14 +2,15 @@
   <div class="login-container">
     <div class="login-card">
       <h2 class="login-title">Вход</h2>
-      <form @submit.prevent="login" class="login-form">
+      <form @submit.prevent="login" class="login-form" autocomplete="on">
         <div class="form-group">
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Эл. почта"
             v-model="loginInput"
             id="email-input"
             name="email"
+            autocomplete="username"
             required
           />
         </div>
@@ -20,6 +21,7 @@
             v-model="password"
             id="password-input"
             name="password"
+            autocomplete="current-password"
             required
           />
         </div>

@@ -32,7 +32,7 @@
               </div>
             </div>
             <div class="pop-browse__wrap">
-              <form class="pop-browse__form form-browse" id="formBrowseCard" action="#">
+              <form class="pop-browse__form form-browse" id="formBrowseCard" autocomplete="off">
                 <div class="form-browse__block">
                   <label for="formTitle" class="subttl">Название задачи</label>
                   <input
@@ -41,6 +41,10 @@
                     id="formTitle"
                     type="text"
                     :readonly="!isEditing"
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-bwignore
                     v-model="task.title"
                   />
                 </div>
@@ -52,6 +56,10 @@
                     id="textArea01"
                     :readonly="!isEditing"
                     placeholder="Введите описание задачи..."
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-bwignore
                     v-model="task.description"
                   ></textarea>
                 </div>

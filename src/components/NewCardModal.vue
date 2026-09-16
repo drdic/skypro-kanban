@@ -124,14 +124,14 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { createTask } from '../services/kanban.js'
-import { board } from '../store/board.js'
 
 export default {
   name: 'NewCardModal',
   setup() {
+    const { board } = inject('boardData')
     const router = useRouter()
     const title = ref('')
     const description = ref('')

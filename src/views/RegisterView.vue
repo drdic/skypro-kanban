@@ -2,7 +2,7 @@
   <div class="register-container">
     <div class="register-card">
       <h2 class="register-title">Регистрация</h2>
-      <form @submit.prevent="register" class="register-form">
+      <form @submit.prevent="register" class="register-form" autocomplete="on">
         <div class="form-group">
           <input
             type="text"
@@ -10,18 +10,20 @@
             v-model="name"
             id="name-input"
             name="name"
+            autocomplete="name"
             required
-          >
+          />
         </div>
         <div class="form-group">
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Эл. почта"
             v-model="email"
             id="email-input"
             name="email"
+            autocomplete="username"
             required
-          >
+          />
         </div>
         <div class="form-group">
           <input
@@ -30,17 +32,16 @@
             v-model="password"
             id="password-input"
             name="password"
+            autocomplete="new-password"
             required
-          >
+          />
         </div>
         <p v-if="error" class="register-error">{{ error }}</p>
         <button type="submit" class="register-button" :disabled="isLoading">
           {{ isLoading ? 'Регистрация...' : 'Зарегистрироваться' }}
         </button>
       </form>
-      <router-link to="/login" class="login-link">
-        Уже есть аккаунт? Войдите
-      </router-link>
+      <router-link to="/login" class="login-link"> Уже есть аккаунт? Войдите </router-link>
     </div>
   </div>
 </template>
@@ -51,6 +52,7 @@ import { useRouter } from 'vue-router'
 import { signUp } from '../services/auth.js'
 
 const { setUser } = inject('auth')
+const { showToast } = inject('notifications')
 const name = ref('')
 const email = ref('')
 const password = ref('')
@@ -61,11 +63,7 @@ const router = useRouter()
 const register = async () => {
   error.value = ''
 
-  if (
-    !name.value.trim() ||
-    !email.value.trim() ||
-    !password.value.trim()
-  ) {
+  if (!name.value.trim() || !email.value.trim() || !password.value.trim()) {
     error.value = 'Пожалуйста, заполните все обязательные поля'
     return
   }
@@ -78,9 +76,11 @@ const register = async () => {
       password: password.value,
     })
     setUser(user)
+    showToast('Регистрация прошла успешно')
     router.push('/')
   } catch (err) {
     error.value = err.message
+    showToast(err.message, 'error')
   } finally {
     isLoading.value = false
   }

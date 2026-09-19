@@ -10,7 +10,7 @@
               <form
                 class="pop-new-card__form form-new"
                 id="formNewCard"
-                action="#"
+                autocomplete="off"
                 @submit.prevent="handleSubmit"
               >
                 <div class="form-new__block">
@@ -19,9 +19,13 @@
                     ref="titleInput"
                     class="form-new__input"
                     type="text"
-                    name="name"
+                    name="title"
                     id="formTitle"
                     placeholder="Введите название задачи..."
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-bwignore
                     v-model="title"
                   />
                 </div>
@@ -32,6 +36,10 @@
                     name="text"
                     id="textArea"
                     placeholder="Введите описание задачи..."
+                    autocomplete="off"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-bwignore
                     v-model="description"
                   ></textarea>
                 </div>
@@ -95,7 +103,8 @@
                   <div class="calendar__period">
                     <p class="calendar__p date-end">
                       Выберите срок исполнения
-                      <span class="date-control">{{ selectedDateLabel }}</span>.
+                      <span class="date-control">{{ selectedDateLabel }}</span
+                      >.
                     </p>
                   </div>
                 </div>
@@ -115,7 +124,14 @@
                 </div>
               </div>
             </div>
-            <button class="form-new__create _hover01" id="btnCreate" @click="handleSubmit">Создать задачу</button>
+            <button
+              class="form-new__create _hover01"
+              id="btnCreate"
+              :disabled="isSubmitting"
+              @click="handleSubmit"
+            >
+              {{ isSubmitting ? 'Создание...' : 'Создать задачу' }}
+            </button>
           </div>
         </div>
       </div>
@@ -132,10 +148,12 @@ export default {
   name: 'NewCardModal',
   setup() {
     const { board } = inject('boardData')
+    const { showToast } = inject('notifications')
     const router = useRouter()
     const title = ref('')
     const description = ref('')
     const error = ref('')
+    const isSubmitting = ref(false)
     const titleInput = ref(null)
     const category = ref('Web Design')
     const categories = [
@@ -180,9 +198,7 @@ export default {
       for (let d = 1; d <= daysInMonth; d++) {
         const isSelected = selectedDate.value === d
         const isToday =
-          d === now.getDate() &&
-          month.value === now.getMonth() &&
-          year.value === now.getFullYear()
+          d === now.getDate() && month.value === now.getMonth() && year.value === now.getFullYear()
         const weekday = (firstDayOffset + d - 1) % 7
         const cls = ['_cell-day']
         if (isSelected) cls.push('_active-day')
@@ -224,7 +240,13 @@ export default {
         return
       }
 
+      if (title.value.trim().length < 2) {
+        error.value = 'Название задачи должно содержать минимум 2 символа'
+        return
+      }
+
       error.value = ''
+      isSubmitting.value = true
       try {
         const pad2 = (n) => String(n).padStart(2, '0')
         const date = selectedDate.value
@@ -232,7 +254,7 @@ export default {
           : undefined
 
         const updatedTasks = await createTask({
-          title: title.value,
+          title: title.value.trim(),
           description: description.value.trim() || 'Без описания',
           topic: category.value,
           date,
@@ -240,9 +262,13 @@ export default {
         if (Array.isArray(updatedTasks)) {
           board.tasks = updatedTasks
         }
+        showToast('Задача создана')
         router.push('/')
       } catch (err) {
         error.value = err.message
+        showToast(err.message, 'error')
+      } finally {
+        isSubmitting.value = false
       }
     }
 
@@ -254,6 +280,7 @@ export default {
       title,
       description,
       error,
+      isSubmitting,
       titleInput,
       category,
       categories,
@@ -359,6 +386,7 @@ export default {
   font-size: 14px;
   line-height: 1;
   letter-spacing: -0.14px;
+  color: var(--color-text-primary);
 }
 
 .form-new__input::placeholder,
@@ -398,6 +426,11 @@ export default {
   line-height: 1;
   color: var(--color-text-white);
   float: right;
+}
+
+.form-new__create:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .subttl {

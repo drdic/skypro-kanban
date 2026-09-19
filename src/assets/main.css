@@ -101,6 +101,18 @@ body {
   display: none;
 }
 
+.dark .header__logo._light {
+  display: none;
+}
+
+.dark .header__logo._dark {
+  display: block;
+}
+
+.dark .header {
+  background-color: var(--color-bg);
+}
+
 .wrapper {
   max-width: 100%;
   width: 100vw;

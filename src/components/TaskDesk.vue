@@ -1,13 +1,32 @@
 <template>
   <div class="container">
     <div class="main__block">
-      <div v-if="isLoading" class="loading-state">
-        <div class="loader" aria-label="Загрузка"></div>
-        <p>Данные загружаются</p>
+      <div v-if="isLoading" class="skeleton" aria-label="Загрузка" aria-busy="true">
+        <div v-for="(count, index) in skeletonColumns" :key="index" class="skeleton__column">
+          <div class="skeleton__title"></div>
+          <div v-for="card in count" :key="card" class="skeleton__item">
+            <div class="skeleton__card">
+              <div class="skeleton__badge"></div>
+              <div class="skeleton__line"></div>
+              <div class="skeleton__line skeleton__line_short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="error" class="error-state">
+        <p class="error-state__text">{{ error }}</p>
+        <button class="error-state__retry _hover01" @click="loadTasks">
+          Попробовать снова
+        </button>
       </div>
 
       <div v-else-if="!hasTasks" class="empty-state">
-        <p>Задач нет</p>
+        <p class="empty-state__title">Новых задач нет</p>
+        <p class="empty-state__hint">Создайте первую задачу, чтобы начать работу</p>
+        <router-link to="/add" class="empty-state__link _hover01">
+          Создать задачу
+        </router-link>
       </div>
 
       <div v-else class="main__content">
@@ -37,6 +56,7 @@
 
 <script>
 import { ref, onMounted, computed, inject } from 'vue'
+import { useRouter } from 'vue-router'
 import { getTasks } from '../services/kanban.js'
 import TaskColumn from './TaskColumn.vue'
 import TaskCard from './TaskCard.vue'
@@ -50,7 +70,27 @@ export default {
   setup() {
     const { board } = inject('boardData')
     const { removeUser } = inject('auth')
+    const { showToast } = inject('notifications')
+    const router = useRouter()
     const isLoading = ref(true)
+    const error = ref('')
+
+    const SKELETON_KEY = 'kanban-skeleton-columns'
+    const DEFAULT_SKELETON = [1, 1, 1, 1, 1]
+
+    const readSkeletonCounts = () => {
+      try {
+        const stored = JSON.parse(localStorage.getItem(SKELETON_KEY) || 'null')
+        if (Array.isArray(stored) && stored.length === 5 && stored.some((count) => count > 0)) {
+          return stored
+        }
+      } catch {
+        return DEFAULT_SKELETON
+      }
+      return DEFAULT_SKELETON
+    }
+
+    const skeletonColumns = ref(readSkeletonCounts())
 
     const getThemeColor = (topic) => {
       const themeMap = {
@@ -65,8 +105,22 @@ export default {
       'Без статуса': 'no-status',
       'Нужно сделать': 'todo',
       'В работе': 'in-progress',
-      'Тестирование': 'testing',
-      'Готово': 'done',
+      Тестирование: 'testing',
+      Готово: 'done',
+    }
+
+    const skeletonOrder = ['no-status', 'todo', 'in-progress', 'testing', 'done']
+
+    const saveSkeletonCounts = (taskList) => {
+      const counts = skeletonOrder.map(
+        (status) => taskList.filter((task) => statusMap[task.status] === status).length,
+      )
+      if (!counts.some((count) => count > 0)) return
+      try {
+        localStorage.setItem(SKELETON_KEY, JSON.stringify(counts))
+      } catch {
+        return
+      }
     }
 
     const adaptTasks = (taskList) => {
@@ -82,41 +136,36 @@ export default {
     const hasTasks = computed(() => board.tasks.length > 0)
 
     const noStatusTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'no-status'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'no-status')),
     )
     const todoTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'todo'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'todo')),
     )
     const inProgressTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter(
-          (task) => statusMap[task.status] === 'in-progress',
-        ),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'in-progress')),
     )
     const testingTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'testing'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'testing')),
     )
     const doneTasks = computed(() =>
-      adaptTasks(
-        board.tasks.filter((task) => statusMap[task.status] === 'done'),
-      ),
+      adaptTasks(board.tasks.filter((task) => statusMap[task.status] === 'done')),
     )
 
     const loadTasks = async () => {
+      isLoading.value = true
+      error.value = ''
       try {
         board.tasks = await getTasks()
-      } catch (error) {
-        if (error.status === 401) {
+        saveSkeletonCounts(board.tasks)
+      } catch (err) {
+        if (err.status === 401) {
           removeUser()
-          window.location.href = import.meta.env.BASE_URL + 'login'
+          showToast('Сессия истекла, войдите снова', 'error')
+          router.push({ name: 'login' })
+          return
         }
+        error.value = err.message
+        showToast(err.message, 'error')
       } finally {
         isLoading.value = false
       }
@@ -126,6 +175,9 @@ export default {
 
     return {
       isLoading,
+      error,
+      skeletonColumns,
+      loadTasks,
       hasTasks,
       noStatusTasks,
       todoTasks,
@@ -149,58 +201,134 @@ export default {
   display: flex;
 }
 
-.loading-state {
+.skeleton {
+  width: 100%;
+  display: flex;
+  gap: 0;
+  padding: 25px 0 49px;
+}
+
+.skeleton__column {
+  width: 20%;
+  margin: 0 auto;
+}
+
+.skeleton__title {
+  width: 84px;
+  height: 14px;
+  margin: 15px 10px;
+  border-radius: 4px;
+  background-color: var(--color-border);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton__item {
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.skeleton__card {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  height: 130px;
+  padding: 15px 13px 19px;
+  border-radius: 10px;
+  background-color: var(--color-bg-white);
+  box-sizing: border-box;
+}
+
+.skeleton__badge {
+  width: 60px;
+  height: 20px;
+  margin-bottom: 12px;
+  border-radius: 18px;
+  background-color: var(--color-border);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton__line {
+  width: 100%;
+  height: 18px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: var(--color-border);
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.skeleton__line_short {
+  width: 40px;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 300px;
+  text-align: center;
+}
+
+.empty-state__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.empty-state__hint {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.empty-state__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 20px;
+  margin-top: 8px;
+  border-radius: 4px;
+  background-color: var(--color-accent);
+  color: var(--color-text-white);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
   min-height: 300px;
-  font-size: 18px;
+  text-align: center;
+}
+
+.error-state__text {
+  font-size: 16px;
+  color: #e53e3e;
+}
+
+.error-state__retry {
+  height: 30px;
+  padding: 0 20px;
+  border: 0.7px solid var(--color-accent);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 14px;
   font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.loading-state p {
-  animation: loader-text-pulse 1.6s ease-in-out infinite;
-}
-
-.loader {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 4px solid var(--color-border-light);
-  border-top-color: var(--color-accent);
-  animation: loader-spin 0.9s linear infinite;
-}
-
-@keyframes loader-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes loader-text-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.45;
-  }
-}
-
-.empty-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-text-secondary);
 }
 
 @media screen and (max-width: 1200px) {
@@ -212,6 +340,25 @@ export default {
 
   .main__content {
     display: block;
+  }
+
+  .skeleton {
+    flex-direction: column;
+  }
+
+  .skeleton__column {
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .skeleton__title {
+    display: none;
+  }
+
+  .skeleton__item {
+    flex-shrink: 0;
+    width: 230px;
   }
 }
 </style>

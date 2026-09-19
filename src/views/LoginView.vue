@@ -2,16 +2,17 @@
   <div class="login-container">
     <div class="login-card">
       <h2 class="login-title">Вход</h2>
-      <form @submit.prevent="login" class="login-form">
+      <form @submit.prevent="login" class="login-form" autocomplete="on">
         <div class="form-group">
           <input
             type="email"
-            placeholder="Email"
+            placeholder="Эл. почта"
             v-model="loginInput"
             id="email-input"
             name="email"
+            autocomplete="username"
             required
-          >
+          />
         </div>
         <div class="form-group">
           <input
@@ -20,17 +21,16 @@
             v-model="password"
             id="password-input"
             name="password"
+            autocomplete="current-password"
             required
-          >
+          />
         </div>
         <p v-if="error" class="login-error">{{ error }}</p>
         <button type="submit" class="login-button" :disabled="isLoading">
           {{ isLoading ? 'Вход...' : 'Войти' }}
         </button>
       </form>
-      <router-link to="/register" class="register-link">
-        Регистрация
-      </router-link>
+      <router-link to="/register" class="register-link"> Регистрация </router-link>
     </div>
   </div>
 </template>
@@ -41,6 +41,7 @@ import { useRouter } from 'vue-router'
 import { signIn } from '../services/auth.js'
 
 const { setUser } = inject('auth')
+const { showToast } = inject('notifications')
 const loginInput = ref('')
 const password = ref('')
 const isLoading = ref(false)
@@ -62,9 +63,11 @@ const login = async () => {
       password: password.value,
     })
     setUser(user)
+    showToast('Вы успешно вошли в систему')
     router.push('/')
   } catch (err) {
     error.value = err.message
+    showToast(err.message, 'error')
   } finally {
     isLoading.value = false
   }

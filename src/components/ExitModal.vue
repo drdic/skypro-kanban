@@ -30,10 +30,12 @@ export default {
   name: 'ExitModal',
   setup() {
     const { removeUser } = inject('auth')
+    const { showToast } = inject('notifications')
     const router = useRouter()
 
     const handleLogout = () => {
       removeUser()
+      showToast('Вы вышли из аккаунта')
       router.push({ name: 'login' })
     }
 

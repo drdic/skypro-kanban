@@ -24,3 +24,30 @@
   --color-purple-text: #9a48f1;
   --color-gray-bg: #94a6be;
 }
+
+.dark {
+  --color-bg: #151419;
+  --color-bg-content: #151419;
+  --color-bg-white: #20202c;
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #94a6be;
+  --color-text-white: #ffffff;
+
+  --color-border: #4e5566;
+  --color-border-light: rgba(148, 166, 190, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --color-shadow-popup: rgba(0, 0, 0, 0.4);
+  --color-shadow-modal: rgba(0, 0, 0, 0.5);
+
+  --color-accent: #565eef;
+  --color-accent-hover: #33399b;
+
+  --color-orange-bg: #ffe4c2;
+  --color-orange-text: #ff6d00;
+  --color-green-bg: #b4fdd1;
+  --color-green-text: #06b16e;
+  --color-purple-bg: #e9d4ff;
+  --color-purple-text: #9a48f1;
+  --color-gray-bg: #4e5566;
+}

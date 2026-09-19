@@ -9,7 +9,19 @@ const getHeaders = () => ({
 })
 
 const makeError = (error, fallback) => {
-  const err = new Error(error.response?.data?.error || fallback)
+  let message = fallback
+
+  if (error.response) {
+    const status = error.response.status
+    message =
+      status >= 500
+        ? 'Сервер недоступен. Попробуйте позже'
+        : error.response.data?.error || fallback
+  } else if (error.request) {
+    message = 'Нет соединения с сервером. Проверьте подключение к интернету'
+  }
+
+  const err = new Error(message)
   err.status = error.response?.status
   return err
 }
